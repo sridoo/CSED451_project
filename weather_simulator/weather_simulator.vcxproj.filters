@@ -11,10 +11,90 @@
     </Filter>
     <Filter Include="리소스 파일">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms;obj;mtl</Extensions>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{ef9aaf2c-1eba-4d9d-a46f-4a4443ae0ffb}</UniqueIdentifier>
+      <Extensions>vert;frag</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md" />
+    <None Include="shaders\staticObj.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\staticObj.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\skyBox.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\skyBox.vert">
+      <Filter>Shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\main.cc">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="source\readObjFile.cc">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="source\tiny_obj_loader.cc">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="source\loadProgram.cc">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="source\environment.cc">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="source\stb_image.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="source\shaderParams.cc">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="source\camera.cc">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="source\inputRecorder.cc">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="source\sky.cc">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\readObjFile.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\loadProgram.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\environment.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shaderParams.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stb_image.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tiny_obj_loader.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\camera.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\globalParams.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\inputRecorder.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sky.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

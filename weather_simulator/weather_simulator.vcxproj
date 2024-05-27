@@ -160,6 +160,34 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="..\README.md" />
+    <None Include="shaders\skyBox.frag" />
+    <None Include="shaders\skyBox.vert" />
+    <None Include="shaders\staticObj.frag" />
+    <None Include="shaders\staticObj.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\camera.cc" />
+    <ClCompile Include="source\environment.cc" />
+    <ClCompile Include="source\inputRecorder.cc" />
+    <ClCompile Include="source\loadProgram.cc" />
+    <ClCompile Include="source\main.cc" />
+    <ClCompile Include="source\readObjFile.cc" />
+    <ClCompile Include="source\shaderParams.cc" />
+    <ClCompile Include="source\sky.cc" />
+    <ClCompile Include="source\stb_image.c" />
+    <ClCompile Include="source\tiny_obj_loader.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\camera.hpp" />
+    <ClInclude Include="include\environment.hpp" />
+    <ClInclude Include="include\globalParams.hpp" />
+    <ClInclude Include="include\inputRecorder.hpp" />
+    <ClInclude Include="include\loadProgram.hpp" />
+    <ClInclude Include="include\readObjFile.hpp" />
+    <ClInclude Include="include\shaderParams.hpp" />
+    <ClInclude Include="include\sky.hpp" />
+    <ClInclude Include="include\stb_image.h" />
+    <ClInclude Include="include\tiny_obj_loader.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

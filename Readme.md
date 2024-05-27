@@ -7,7 +7,7 @@ In default, you are in the 'move mode'. You can
 * tilt by qe.
 * look around by moving mice.
 
-You can enter 'terminal mode' by pressing 't'. In terminal mode supports the folling instructions
+You can enter 'terminal mode' by pressing 't'. In terminal mode supports the following instructions:
 * `cloudy {sky_covering_ratio}`
   * It makes non raining day with cloud covering `sky_covering_ratio`% amount.
   * `sky_covering_ratio` ranges from 0 to 100.
