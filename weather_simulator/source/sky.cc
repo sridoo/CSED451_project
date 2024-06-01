@@ -1,4 +1,6 @@
 #include <memory>
+#include <iostream>
+#include <fstream>
 
 #include "glm/vec3.hpp"
 #include "GL/glew.h"
@@ -175,4 +177,59 @@ static unique_ptr<vec3[]> cookSingleScat(vec3* transmitT) {
 void cookIterAtmTables() {
 	auto transmitT = cookTransmitT();
 	auto scatT = cookSingleScat(transmitT.get());
+
+	// Save cooked values
+	ofstream fileTransmit;
+	ofstream fileSingleScatter;
+
+	// TODO: exception handling
+	fileTransmit.open(".\\resource\\cookTransmit.cache");
+	for (size_t i = 0; i < transmitT_hDim * transmitT_cosDim; i++) {
+		for (size_t j = 0; j < 3; j++) {
+			if (std::isfinite(transmitT[i][j]))
+				fileTransmit << transmitT[i][j] << " ";
+			else
+				fileTransmit << 0.0 << " ";
+		}
+		fileTransmit << std::endl;
+	}
+	fileTransmit.close();
+
+	fileSingleScatter.open(".\\resource\\cookSingleScatter.cache");
+	for (size_t i = 0; i < intensity_hDim * intnesity_viewDim * intensity_sunDim; i++) {
+		for (size_t j = 0; j < 3; j++) {
+			if (std::isfinite(scatT[i][j]))
+				fileSingleScatter << scatT[i][j] << " ";
+			else
+				fileSingleScatter << 0.0 << " ";
+		}
+		fileSingleScatter << std::endl;
+	}
+	fileSingleScatter.close();
+} 
+
+void loadCookedIterAtmTables() {
+	unique_ptr<vec3[]> transmitT(new vec3[transmitT_hDim * transmitT_cosDim]);
+	unique_ptr<vec3[]> scatT(new vec3[intensity_hDim * intnesity_viewDim * intensity_sunDim]);
+
+	ifstream fileTransmit;
+	ifstream fileSingleScatter;
+
+	// TODO: exception handling
+
+	// Load cooked transmit table
+	fileTransmit.open(".\\resource\\cookTransmit.cache");
+
+	for (size_t i = 0; i < transmitT_hDim * transmitT_cosDim; i++)
+		fileTransmit >> transmitT[i].x >> transmitT[i].y >> transmitT[i].z;
+
+	fileTransmit.close();
+
+	// Load cooked single scatter table
+	fileSingleScatter.open(".\\resource\\cookSingleScatter.cache");
+
+	for (size_t i = 0; i < intensity_hDim * intnesity_viewDim * intensity_sunDim; i++)
+		fileSingleScatter >> scatT[i].x >> scatT[i].y >> scatT[i].z;
+
+	fileSingleScatter.close();
 }

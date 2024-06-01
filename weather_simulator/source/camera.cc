@@ -25,9 +25,9 @@ void camIdle() {
 	static int lastTime = glutGet(GLUT_ELAPSED_TIME);
 	int curTime = glutGet(GLUT_ELAPSED_TIME);
 	if (aPressed())
-		yRotVal -= static_cast<float>(curTime - lastTime) * camMoveSpeed;
-	if(dPressed())
 		yRotVal += static_cast<float>(curTime - lastTime) * camMoveSpeed;
+	if(dPressed())
+		yRotVal -= static_cast<float>(curTime - lastTime) * camMoveSpeed;
 	if (wPressed())
 		xRotVal += static_cast<float>(curTime - lastTime) * camMoveSpeed;
 	if (sPressed())

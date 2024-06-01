@@ -36,7 +36,8 @@ int main(int argc, char** argv) {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     glUseProgram(loadProgram(".\\shaders\\staticObj.vert", ".\\shaders\\staticObj.frag"));
-	cookIterAtmTables();
+	// cookIterAtmTables();
+	loadCookedIterAtmTables();
 	glutIdleFunc(idle);
 	glutKeyboardFunc(inRecKeyboardFunc);
 	glutDisplayFunc(display);
