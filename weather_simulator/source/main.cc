@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
 
     glUseProgram(loadProgram(".\\shaders\\staticObj.vert", ".\\shaders\\staticObj.frag"));
 	// cookIterAtmTables();
-	loadCookedIterAtmTables();
+	cookIterAtmTables();
 	glutIdleFunc(idle);
 	glutKeyboardFunc(inRecKeyboardFunc);
 	glutDisplayFunc(display);

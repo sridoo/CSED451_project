@@ -84,23 +84,11 @@ static inline double density(double dirCos, double initRadius, double initRadius
 	return exp(-(displacedRaidus(initRadius, initRadius2, dirCos, x) - earthRadius) / atmThick);
 }
 
-class Density {
-	const double dirCos_, initRadius_, initRadius2_;
-public:
-	Density(double dirCos, double initRadius)
-		: dirCos_(dirCos), initRadius_(initRadius), initRadius2_(pow(initRadius, 2)){}
-
-	double operator()(double x) {
-		return exp(-(displacedRaidus(initRadius_, initRadius2_, dirCos_, x) - earthRadius) / atmThick);
-	}
-};
-
 double getHerizonAtmDepth(double curRadius, double curRaidus2, double dirCos) {
-	double b = curRadius * dirCos, tmp;
+	double b = curRadius * dirCos;
 	double curHeightSine2 = curRaidus2 - pow(b, 2);
-	if (dirCos < -0.001)
-		return b - sqrt(atmTopRaidus2 - curHeightSine2);
-	else if (double tmp = earthRadius2 - curHeightSine2; tmp > 0.001)
+
+	if (dirCos > 0) if (double tmp = earthRadius2 - curHeightSine2; tmp > 0)
 		return b - sqrt(tmp);
 	return b + sqrt(atmTopRaidus2 - curHeightSine2);
 }
@@ -110,6 +98,18 @@ double phaseFunRay(double cosine) {
 }
 
 static unique_ptr<vec3[]> cookTransmitT() {
+
+	class Density {
+		const double dirCos_, initRadius_, initRadius2_;
+	public:
+		Density(double dirCos, double initRadius, double initRadius2)
+			: dirCos_(dirCos), initRadius_(initRadius), initRadius2_(initRadius2) {}
+
+		double operator()(double x) {
+			return density(dirCos_, initRadius_, initRadius2_, x);
+		}
+	};
+
 	unique_ptr<vec3[]> transmitT(new vec3[transmitT_hDim * transmitT_cosDim]);	//[hight(atmThick/512 ~ atmThick), cos(angle(0, 180)), rgb]
 	constexpr float heightStep = atmThick / transmitT_hDim, cosStep = 2.0 / transmitT_cosDim;
 
@@ -121,7 +121,10 @@ static unique_ptr<vec3[]> cookTransmitT() {
 		for (size_t j = 0; j < transmitT_cosDim; ++j) {
 			double curCos = 1.0 - cosStep * static_cast<double>(j);
 			double xEnd = getHerizonAtmDepth(curRadius, curRadius2, curCos);
-			vec3 val = -rayScatCoef * integrate(Density(curCos, curRadius), 0.0, xEnd, 7.0);
+			double tmp = integrate(Density(curCos, curRadius, curRadius2), 0.0, xEnd, 7.0);;
+			if (tmp > 10000000000)
+				cout << ".." << endl;
+			vec3 val = -rayScatCoef * tmp;
 			arr[j] = { exp(val.x), exp(val.y), exp(val.z) };
 		}
 	}
@@ -176,7 +179,7 @@ static unique_ptr<vec3[]> cookSingleScat(vec3* transmitT) {
 
 void cookIterAtmTables() {
 	auto transmitT = cookTransmitT();
-	auto scatT = cookSingleScat(transmitT.get());
+	//auto scatT = cookSingleScat(transmitT.get());
 
 	// Save cooked values
 	ofstream fileTransmit;
@@ -186,26 +189,26 @@ void cookIterAtmTables() {
 	fileTransmit.open(".\\resource\\cookTransmit.cache");
 	for (size_t i = 0; i < transmitT_hDim * transmitT_cosDim; i++) {
 		for (size_t j = 0; j < 3; j++) {
-			if (std::isfinite(transmitT[i][j]))
+			if (!std::isinf(transmitT[i][j]))
 				fileTransmit << transmitT[i][j] << " ";
 			else
-				fileTransmit << 0.0 << " ";
+				fileTransmit << "inf" << " ";
 		}
 		fileTransmit << std::endl;
 	}
 	fileTransmit.close();
-
-	fileSingleScatter.open(".\\resource\\cookSingleScatter.cache");
-	for (size_t i = 0; i < intensity_hDim * intnesity_viewDim * intensity_sunDim; i++) {
-		for (size_t j = 0; j < 3; j++) {
-			if (std::isfinite(scatT[i][j]))
-				fileSingleScatter << scatT[i][j] << " ";
-			else
-				fileSingleScatter << 0.0 << " ";
-		}
-		fileSingleScatter << std::endl;
-	}
-	fileSingleScatter.close();
+//
+//	fileSingleScatter.open(".\\resource\\cookSingleScatter.cache");
+	//for (size_t i = 0; i < intensity_hDim * intnesity_viewDim * intensity_sunDim; i++) {
+		//for (size_t j = 0; j < 3; j++) {
+			//if (std::isfinite(scatT[i][j]))
+				//fileSingleScatter << scatT[i][j] << " ";
+			//else
+				//fileSingleScatter << 0.0 << " ";
+		//}
+		//fileSingleScatter << std::endl;
+	//}
+	//fileSingleScatter.close();
 } 
 
 void loadCookedIterAtmTables() {
