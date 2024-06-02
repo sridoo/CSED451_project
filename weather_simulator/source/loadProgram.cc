@@ -93,5 +93,5 @@ static void checkCompileErrors(GLuint shader, std::string type) {
 
 void loadPrograms() {
     staticObjProgram = loadProgram(".\\shaders\\staticObj.vert", ".\\shaders\\staticObj.frag");
-    sunProgram = loadProgram(".\\shaders\\sun.vert", ".\\shaders\\sun.frag");
+    //sunProgram = loadProgram(".\\shaders\\sun.vert", ".\\shaders\\sun.frag");
 }

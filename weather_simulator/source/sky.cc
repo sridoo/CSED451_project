@@ -187,10 +187,12 @@ void cookIterAtmTables() {
 	fileTransmit.open(".\\resource\\cookTransmit.cache");
 	for (size_t i = 0; i < transmitT_hDim * transmitT_cosDim; i++) {
 		for (size_t j = 0; j < 3; j++) {
-			if (!std::isinf(transmitT[i][j]))
-				fileTransmit << transmitT[i][j] << " ";
-			else
+			if (std::isinf(transmitT[i][j]))
 				fileTransmit << "inf" << " ";
+			else if (std::isnan(transmitT[i][j]))
+				fileTransmit << "nan" << " ";
+			else
+				fileTransmit << transmitT[i][j] << " ";
 		}
 		fileTransmit << std::endl;
 	}
