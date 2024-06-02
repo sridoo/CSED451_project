@@ -19,9 +19,21 @@ struct BAOelem {
 	BAOelem() = default;
 };
 
-enum StaticObjVertParam {
-	vPos, vNormal, vtexCoord, vEnd,
-	tr = 0, texture = 4
-};
+namespace StaticObjProgramParam {
+	enum StaticObjProgramParam : GLuint {
+		vPos, vNormal, vtexCoord, vEnd,
+		tr = 0, texture = 4
+	};
+}
+
+namespace SunProgramPram {
+	enum SunProgramPram : GLuint {
+		vPos, vViewHeight, vEnd,
+		inTr = 0, exTr = 4, texture = 8
+	};
+}
 
 void vertexAttribPointerForStaticObj(GLuint vao);
+
+extern GLuint staticObjProgram;
+extern GLuint sunProgram;

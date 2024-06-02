@@ -125,7 +125,7 @@ void Plain::initVAO() {
 
 void Plain::drawIter(const mat4& intrinsicMat, const mat4& exTrinsicMat) {
 	glBindVertexArray(vao);
-	glUniformMatrix4fv(StaticObjVertParam::tr, 1, GL_FALSE, value_ptr(intrinsicMat * exTrinsicMat));
+	glUniformMatrix4fv(StaticObjProgramParam::tr, 1, GL_FALSE, value_ptr(intrinsicMat * exTrinsicMat));
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, bao.size());
 	glBindVertexArray(0);
@@ -205,7 +205,7 @@ Tree::Tree() {
 }
 
 void Tree::drawIter(const mat4& intrinsicMat, const mat4& exTrinsicMat) {
-	glUniformMatrix4fv(StaticObjVertParam::tr, 1, GL_FALSE, value_ptr(intrinsicMat * exTrinsicMat * modelTr));
+	glUniformMatrix4fv(StaticObjProgramParam::tr, 1, GL_FALSE, value_ptr(intrinsicMat * exTrinsicMat * modelTr));
 	for (auto& [vao, textureID, eboLen] : vaoIDs) {
 		glBindVertexArray(vao);
 		glBindTexture(GL_TEXTURE_2D, textureID);
@@ -235,6 +235,7 @@ EnvProto::EnvProto() {
 
 
 void EnvProto::drawIter(const mat4& intrinsicMat, const mat4& exTrinsicMat) {
+	glUseProgram(staticObjProgram);
 	Plain::instance().drawIter(intrinsicMat, exTrinsicMat);
 	for (auto& treeCoord : treeCoords)
 		Tree::instance().drawIter(intrinsicMat, translate(exTrinsicMat, treeCoord));

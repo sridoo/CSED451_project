@@ -21,7 +21,7 @@ static constexpr double earthRadius2 = earthRadius * earthRadius;
 static constexpr double atmTopRadius = earthRadius + atmThick;
 static constexpr double atmTopRaidus2 = atmTopRadius * atmTopRadius;
 
-const static dvec3 rayScatCoef = { 5.6 * exp(-6.0), 1.35 * exp(-5.0), 3.31 * exp(-5.0) };
+const static dvec3 rayScatCoef = { 5.6 * pow(10, -6.0), 1.35 * pow(10, -5.0), 3.31 * pow(10, -5.0) };
 const static vec3 sunLight = { 1.f, 1.f, 1.f };
 static inline dvec3 rayDisribut(double height) {
 	return rayScatCoef * exp(-height / 8000);
@@ -84,6 +84,7 @@ static inline double density(double dirCos, double initRadius, double initRadius
 	return exp(-(displacedRaidus(initRadius, initRadius2, dirCos, x) - earthRadius) / atmThick);
 }
 
+
 double getHerizonAtmDepth(double curRadius, double curRaidus2, double dirCos) {
 	double b = curRadius * dirCos;
 	double curHeightSine2 = curRaidus2 - pow(b, 2);
@@ -121,10 +122,7 @@ static unique_ptr<vec3[]> cookTransmitT() {
 		for (size_t j = 0; j < transmitT_cosDim; ++j) {
 			double curCos = 1.0 - cosStep * static_cast<double>(j);
 			double xEnd = getHerizonAtmDepth(curRadius, curRadius2, curCos);
-			double tmp = integrate(Density(curCos, curRadius, curRadius2), 0.0, xEnd, 7.0);;
-			if (tmp > 10000000000)
-				cout << ".." << endl;
-			vec3 val = -rayScatCoef * tmp;
+			vec3 val = -rayScatCoef * integrate(Density(curCos, curRadius, curRadius2), 0.0, xEnd, 7.0);
 			arr[j] = { exp(val.x), exp(val.y), exp(val.z) };
 		}
 	}

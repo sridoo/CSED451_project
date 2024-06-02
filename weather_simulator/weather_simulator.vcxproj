@@ -164,6 +164,8 @@
     <None Include="shaders\skyBox.vert" />
     <None Include="shaders\staticObj.frag" />
     <None Include="shaders\staticObj.vert" />
+    <None Include="shaders\sun.frag" />
+    <None Include="shaders\sun.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\camera.cc" />

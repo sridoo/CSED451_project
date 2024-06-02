@@ -13,6 +13,7 @@
 #include "sky.hpp"
 
 using namespace std;
+using namespace glm;
 
 void idle() {
 	camIdle();
@@ -21,7 +22,8 @@ void idle() {
 
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	drawEnvIter(getCamMat(), glm::mat4(1));
+	mat4 camMat = getCamMat();
+	drawEnvIter(camMat, glm::mat4(1));
     glutSwapBuffers();
 }
 
@@ -35,8 +37,7 @@ int main(int argc, char** argv) {
     glClearColor(0, 0, 0, 1);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    glUseProgram(loadProgram(".\\shaders\\staticObj.vert", ".\\shaders\\staticObj.frag"));
-	// cookIterAtmTables();
+	loadPrograms();
 	cookIterAtmTables();
 	glutIdleFunc(idle);
 	glutKeyboardFunc(inRecKeyboardFunc);

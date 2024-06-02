@@ -32,6 +32,12 @@
     <None Include="shaders\skyBox.vert">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="shaders\sun.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\sun.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cc">

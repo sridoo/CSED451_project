@@ -4,10 +4,11 @@
 #include <iostream>
 
 #include "loadProgram.hpp"
+#include "shaderParams.hpp"
 
 static void checkCompileErrors(GLuint shader, std::string type);
 
-GLuint loadProgram(const char* vShaderPath, const char* fShaderPath) {
+static GLuint loadProgram(const char* vShaderPath, const char* fShaderPath) {
     // 1. retrieve the vertex/fragment source code from filePath
     std::string vertexCode;
     std::string fragmentCode;
@@ -87,4 +88,10 @@ static void checkCompileErrors(GLuint shader, std::string type) {
             std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
         }
     }
+}
+
+
+void loadPrograms() {
+    staticObjProgram = loadProgram(".\\shaders\\staticObj.vert", ".\\shaders\\staticObj.frag");
+    sunProgram = loadProgram(".\\shaders\\sun.vert", ".\\shaders\\sun.frag");
 }
