@@ -168,6 +168,7 @@
     <None Include="shaders\sun.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\atmParams.cc" />
     <ClCompile Include="source\camera.cc" />
     <ClCompile Include="source\environment.cc" />
     <ClCompile Include="source\inputRecorder.cc" />
@@ -175,11 +176,14 @@
     <ClCompile Include="source\main.cc" />
     <ClCompile Include="source\readObjFile.cc" />
     <ClCompile Include="source\shaderParams.cc" />
-    <ClCompile Include="source\sky.cc" />
     <ClCompile Include="source\stb_image.c" />
+    <ClCompile Include="source\Sun.cc" />
+    <ClCompile Include="source\time.cc" />
     <ClCompile Include="source\tiny_obj_loader.cc" />
+    <ClCompile Include="source\transmit.cc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\atmParams.hpp" />
     <ClInclude Include="include\camera.hpp" />
     <ClInclude Include="include\environment.hpp" />
     <ClInclude Include="include\globalParams.hpp" />
@@ -187,9 +191,11 @@
     <ClInclude Include="include\loadProgram.hpp" />
     <ClInclude Include="include\readObjFile.hpp" />
     <ClInclude Include="include\shaderParams.hpp" />
-    <ClInclude Include="include\sky.hpp" />
     <ClInclude Include="include\stb_image.h" />
+    <ClInclude Include="include\Sun.hpp" />
+    <ClInclude Include="include\time.hpp" />
     <ClInclude Include="include\tiny_obj_loader.hpp" />
+    <ClInclude Include="include\transmit.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

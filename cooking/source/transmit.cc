@@ -28,7 +28,7 @@ public:
 		: dirCos_(dirCos), initRadius_(initRadius), initRadius2_(initRadius2) {}
 
 	double operator()(double x) {
-		return density(dirCos_, initRadius_, initRadius2_, x);
+		return displacedDensity(dirCos_, initRadius_, initRadius2_, x);
 	}
 };
 

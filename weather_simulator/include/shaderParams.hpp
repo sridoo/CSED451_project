@@ -28,8 +28,8 @@ namespace StaticObjProgramParam {
 
 namespace SunProgramPram {
 	enum SunProgramPram : GLuint {
-		vPos, vViewHeight, vEnd,
-		inTr = 0, exTr = 4, texture = 8
+		vPos, vEnd,
+		inTr = 0, exTr = 4, texture = 8, vViewHeight = 9
 	};
 }
 

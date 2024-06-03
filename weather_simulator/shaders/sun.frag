@@ -11,5 +11,4 @@ out vec4 FragColor;
 void main(){
 	float r = sqrt(pow(fPos.x, 2) + pow(fPos.y, 2));
 	FragColor = vec4(1.0, 1.0, 1.0, 1.0) * texture(transmitTex, vec2(fViewHeight, -fPos.x / r));
-
 }

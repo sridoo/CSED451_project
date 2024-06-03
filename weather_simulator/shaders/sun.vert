@@ -2,10 +2,10 @@
 #extension GL_ARB_explicit_uniform_location : enable
 
 in vec3 vPos;
-in float vViewHeight;
 
 layout(location = 0) uniform mat4 inTr;
 layout(location = 4) uniform mat4 exTr;
+layout(location = 9) uniform float vViewHeight;
 
 out vec2 fPos;
 out float fViewHeight;

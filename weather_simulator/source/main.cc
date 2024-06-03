@@ -10,7 +10,7 @@
 #include "camera.hpp"
 #include "inputRecorder.hpp"
 #include "environment.hpp"
-#include "sky.hpp"
+#include "transmit.hpp"
 
 using namespace std;
 using namespace glm;
@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	loadPrograms();
-	cookIterAtmTables();
+	fTransmitTable = transmitTable.toFloat();
 	glutIdleFunc(idle);
 	glutKeyboardFunc(inRecKeyboardFunc);
 	glutDisplayFunc(display);

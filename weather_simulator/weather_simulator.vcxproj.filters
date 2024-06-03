@@ -67,7 +67,16 @@
     <ClCompile Include="source\inputRecorder.cc">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="source\sky.cc">
+    <ClCompile Include="source\transmit.cc">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="source\atmParams.cc">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="source\time.cc">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Sun.cc">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -99,7 +108,16 @@
     <ClInclude Include="include\inputRecorder.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="include\sky.hpp">
+    <ClInclude Include="include\transmit.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\atmParams.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\time.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Sun.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

@@ -20,7 +20,7 @@ inline double getHerizonAtmDepth(double curRadius, double curRaidus2, double dir
 inline double displacedRaidus(double initRadius, double initRadius2, double dirCos, double x) {
 	return sqrt(initRadius2 + pow(x, 2) - 2 * x * initRadius * dirCos);
 }
-inline double density(double dirCos, double initRadius, double initRadius2, double x) {
+inline double displacedDensity(double dirCos, double initRadius, double initRadius2, double x) {
 	return exp(-(displacedRaidus(initRadius, initRadius2, dirCos, x) - earthRadius) / atmThick);
 }
 
