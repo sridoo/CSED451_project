@@ -60,7 +60,7 @@ static GLuint makeTexID(const char* filePath) {
 	if (data)
 	{
 		GLint format = (nrChannels == 3 ? GL_RGB : GL_RGBA);
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else
@@ -74,20 +74,8 @@ static GLuint makeTexID(const char* filePath) {
 
 
 static class Plain final {
-	GLuint vao;
-	GLuint textureID;
+	GLuint vao, textureID, baoLen;
 	Plain();
-
-	inline static const array<BAOelem, 4> bao = {
-		//farLeft
-		BAOelem{{-mapWidth/2.0f, 0.f, -mapWidth / 2.0f}, {0, 1, 0}, {-mapWidth / 2.0f, -mapWidth / 2.0f}},
-		//FarRight
-		{{mapWidth / 2.0f, 0.f, -mapWidth / 2.0f}, {0, 1, 0}, {mapWidth / 2.0f, -mapWidth / 2.0f}},
-		//closeRight
-		{{mapWidth / 2.0f, 0.f, mapWidth / 2.0f}, {0, 1, 0}, {mapWidth / 2.0f, mapWidth / 2.0f}},
-		//closeLeft
-		{{-mapWidth / 2.0f, 0.f, mapWidth / 2.0f}, {0, 1, 0}, {-mapWidth / 2.0f, mapWidth / 2.0f}}
-	};
 
 	static constexpr char texturePath[] = ".\\resource\\grass.jpg";
 
@@ -109,6 +97,19 @@ Plain::Plain() {
 }
 
 void Plain::initVAO() {
+	const array<BAOelem, 4> bao = {
+		//farLeft
+		BAOelem{{-mapWidth / 2.0f, 0.f, -mapWidth / 2.0f}, {0, 1, 0}, {-mapWidth / 2.0f, -mapWidth / 2.0f}},
+		//FarRight
+		{{mapWidth / 2.0f, 0.f, -mapWidth / 2.0f}, {0, 1, 0}, {mapWidth / 2.0f, -mapWidth / 2.0f}},
+		//closeRight
+		{{mapWidth / 2.0f, 0.f, mapWidth / 2.0f}, {0, 1, 0}, {mapWidth / 2.0f, mapWidth / 2.0f}},
+		//closeLeft
+		{{-mapWidth / 2.0f, 0.f, mapWidth / 2.0f}, {0, 1, 0}, {-mapWidth / 2.0f, mapWidth / 2.0f}}
+	};
+
+	baoLen = bao.size();
+
 	glCreateVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
@@ -127,7 +128,7 @@ void Plain::drawIter(const mat4& intrinsicMat, const mat4& exTrinsicMat) {
 	glBindVertexArray(vao);
 	glUniformMatrix4fv(StaticObjProgramParam::tr, 1, GL_FALSE, value_ptr(intrinsicMat * exTrinsicMat));
 	glBindTexture(GL_TEXTURE_2D, textureID);
-	glDrawArrays(GL_TRIANGLE_FAN, 0, bao.size());
+	glDrawArrays(GL_TRIANGLE_FAN, 0, baoLen);
 	glBindVertexArray(0);
 }
 

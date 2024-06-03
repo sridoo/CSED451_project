@@ -13,6 +13,7 @@ out float fViewHeight;
 void main(){
 	vec4 pos4 = exTr * vec4(vPos, 1);
 	gl_Position = inTr * pos4;
-	fPos = vec2(sqrt(pow(pos4.x, 2) + pow(pos4.z, 2)), pos4.y - vViewHeight);
+	fPos.x = sqrt(pow(pos4.x, 2) + pow(pos4.z, 2));
+	fPos.y = -pos4.y;
 	fViewHeight = vViewHeight / 8000.0;
 }

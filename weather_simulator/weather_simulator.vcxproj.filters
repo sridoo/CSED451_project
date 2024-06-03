@@ -38,6 +38,12 @@
     <None Include="shaders\sun.vert">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="shaders\terminal.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\terminal.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cc">
@@ -73,10 +79,13 @@
     <ClCompile Include="source\atmParams.cc">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="source\time.cc">
+    <ClCompile Include="source\Sun.cc">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="source\Sun.cc">
+    <ClCompile Include="source\globalParams.cc">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="source\terminalMode.cc">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -114,10 +123,10 @@
     <ClInclude Include="include\atmParams.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="include\time.hpp">
+    <ClInclude Include="include\Sun.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="include\Sun.hpp">
+    <ClInclude Include="include\terminalMode.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

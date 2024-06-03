@@ -1,14 +1,11 @@
 #pragma once
-#include <array>
 
 #include "GL/glew.h"
 #include "glm/mat4x4.hpp"
-#include "glm/vec3.hpp"
 
 class Sun {
 	Sun();
-	std::array<glm::vec3, 65> verts_;
-	GLuint vaoID_;
+	GLuint vaoID_, aboLen_;
 
 public:
 	static Sun& instance();

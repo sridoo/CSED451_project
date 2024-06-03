@@ -12,10 +12,11 @@ static constexpr float defaultAspect = 16.0 / 9.0;
 static constexpr float defaultFov = 87;
 static constexpr float camMoveSpeed = 0.001;
 
-static const mat4 intrinsicMat = perspective(defaultFov, defaultAspect, 1.0f, mapWidth / 2.0f);//ortho(-5.f, 5.f, -5.f, 5.f, 0.f, 100.f);
+static const mat4 intrinsicMat = perspective(defaultFov, defaultAspect, 1.0f, mapWidth);
 static const mat4 viewMat = lookAt(vec3{ 0.f, 3.f, 0.f }, { 0.f, 3.f, -1.f }, { 0.f, -1.f, 0.f });
 static float yRotVal = 0;
 static float xRotVal = 0;
+const vec3 camPos = vec3{ 0.f, 3.f, 0.f };
 
 mat4 getCamMat() {
 	return rotate(rotate(intrinsicMat, xRotVal, { 1.f, 0.f, 0.f }), yRotVal, { 0.f, 1.f, 0.f }) * viewMat;

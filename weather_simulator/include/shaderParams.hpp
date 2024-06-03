@@ -26,10 +26,16 @@ namespace StaticObjProgramParam {
 	};
 }
 
-namespace SunProgramPram {
+namespace SunProgramParam {
 	enum SunProgramPram : GLuint {
 		vPos, vEnd,
 		inTr = 0, exTr = 4, texture = 8, vViewHeight = 9
+	};
+}
+
+namespace TerminalProgramParam {
+	enum {
+		vPos, vEnd
 	};
 }
 
@@ -37,3 +43,4 @@ void vertexAttribPointerForStaticObj(GLuint vao);
 
 extern GLuint staticObjProgram;
 extern GLuint sunProgram;
+extern GLuint terminalProgram;

@@ -156,12 +156,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cc" />
-    <ClCompile Include="source\scattering.cc" />
     <ClCompile Include="source\transmit.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\atmParams.hpp" />
-    <ClInclude Include="include\scattering.hpp" />
     <ClInclude Include="include\transmit.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

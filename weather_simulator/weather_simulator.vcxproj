@@ -166,11 +166,14 @@
     <None Include="shaders\staticObj.vert" />
     <None Include="shaders\sun.frag" />
     <None Include="shaders\sun.vert" />
+    <None Include="shaders\terminal.frag" />
+    <None Include="shaders\terminal.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\atmParams.cc" />
     <ClCompile Include="source\camera.cc" />
     <ClCompile Include="source\environment.cc" />
+    <ClCompile Include="source\globalParams.cc" />
     <ClCompile Include="source\inputRecorder.cc" />
     <ClCompile Include="source\loadProgram.cc" />
     <ClCompile Include="source\main.cc" />
@@ -178,7 +181,7 @@
     <ClCompile Include="source\shaderParams.cc" />
     <ClCompile Include="source\stb_image.c" />
     <ClCompile Include="source\Sun.cc" />
-    <ClCompile Include="source\time.cc" />
+    <ClCompile Include="source\terminalMode.cc" />
     <ClCompile Include="source\tiny_obj_loader.cc" />
     <ClCompile Include="source\transmit.cc" />
   </ItemGroup>
@@ -193,7 +196,7 @@
     <ClInclude Include="include\shaderParams.hpp" />
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\Sun.hpp" />
-    <ClInclude Include="include\time.hpp" />
+    <ClInclude Include="include\terminalMode.hpp" />
     <ClInclude Include="include\tiny_obj_loader.hpp" />
     <ClInclude Include="include\transmit.hpp" />
   </ItemGroup>

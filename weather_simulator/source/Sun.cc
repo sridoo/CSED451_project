@@ -1,13 +1,19 @@
 #include <cmath>
+#include <array>
 
-#include "time.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
 #include "Sun.hpp"
 #include "shaderParams.hpp"
 #include "transmit.hpp"
+#include "globalParams.hpp"
+#include "camera.hpp"
 
 using namespace glm;
+using namespace std;
 
-static constexpr double sunRaidus = 10;
+static constexpr double sunRaidus = 10.0;
 static const float PI = acosf(-1.f);
 
 Sun& Sun::instance() {
@@ -16,13 +22,16 @@ Sun& Sun::instance() {
 }
 
 Sun::Sun() {
-	verts_[0] = {};
+	array<vec3, 66> verts_;
+	constexpr float mapWidthHalf = mapWidth / 2.f;
+	aboLen_ = verts_.size();
+	verts_[0] = { mapWidthHalf, 0, 0};
 
-	static const float angleStep = 2.f * PI / (verts_.size() - 1);
+	static const float angleStep = 2.f * PI / (verts_.size() - 2);
 
 	for (size_t i = 1; i < verts_.size(); ++i) {
-		float angle = PI * static_cast<float>(i) * angleStep;
-		verts_[i] = { 0, sinf(angle), cosf(angle) };
+		float angle = static_cast<float>(i) * angleStep;
+		verts_[i] = { mapWidthHalf, sunRaidus * sinf(angle), sunRaidus * cosf(angle) };
 	}
 
 	glCreateVertexArrays(1, &vaoID_);
@@ -33,8 +42,8 @@ Sun::Sun() {
 	glBindBuffer(GL_ARRAY_BUFFER, baoID);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(verts_), verts_.data(), GL_STATIC_DRAW);
 
-	glVertexAttribPointer(SunProgramPram::vPos, 3, GL_FLOAT, GL_FALSE, sizeof(BAOelem), (void*)offsetof(BAOelem, vPos));
-	for (size_t i = 0; i < SunProgramPram::vEnd; ++i)
+	glVertexAttribPointer(SunProgramParam::vPos, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), 0);
+	for (size_t i = 0; i < SunProgramParam::vEnd; ++i)
 		glEnableVertexArrayAttrib(vaoID_, i);
 
 	glBindVertexArray(0);
@@ -43,9 +52,16 @@ Sun::Sun() {
 }
 
 void Sun::drawSunIter(const mat4& intrinsicMat, const mat4& exTrinsicMat) {
+	glUseProgram(sunProgram);
+	float angle = (curTime - 6.f) / 12.f * PI;
+	mat4 tr = glm::rotate(exTrinsicMat, angle, { 0, 0, 1.f });
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, transmitTableTexID);
+
 	glBindVertexArray(vaoID_);
-	glUniformMatrix4fv(StaticObjProgramParam::tr, 1, GL_FALSE, value_ptr(intrinsicMat * exTrinsicMat));
-	glBindTexture(GL_TEXTURE_2D, textureID);
-	glDrawArrays(GL_TRIANGLE_FAN, 0, bao.size());
+	glUniformMatrix4fv(SunProgramParam::inTr, 1, GL_FALSE, value_ptr(intrinsicMat));
+	glUniformMatrix4fv(SunProgramParam::exTr, 1, GL_FALSE, value_ptr(tr));
+	glUniform1f(SunProgramParam::vViewHeight, camPos.y);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, aboLen_);
 	glBindVertexArray(0);
 }
