@@ -1,3 +1,52 @@
+#include "scattering.hpp"
+
+#include <thread>
+#include <vector>
+#include <iostream>
+
+#include <glm/glm.hpp>
+
+#include "atmParams.hpp"
+#include "transmit.hpp"
+
+using namespace glm;
+using namespace std;
+
+template<typename T>
+static const T PI = acos(-1.0);
+
+static constexpr double dtransmitT_hDim = transmitT_hDim, dtransmitT_cosDim = transmitT_cosDim;
+static constexpr size_t intensity_hDim = 32, intnesity_viewDim = 256, intensity_sunDim = 64;
+static const vec3 sunLight{ 1.f, 1.f, 1.f };
+
+class Density {
+	const double dirCos_, initRadius_, initRadius2_;
+public:
+	Density(double dirCos, double initRadius, double initRadius2)
+		: dirCos_(dirCos), initRadius_(initRadius), initRadius2_(initRadius2) {}
+
+	double operator()(double x) {
+		return displacedDensity(dirCos_, initRadius_, initRadius2_, x);
+	}
+};
+
+static inline double displacedCos(double initRadius, double initRadius2, double dirCos, double x) {
+	return (initRadius - dirCos * x) / displacedRaidus(initRadius, initRadius2, dirCos, x);
+}
+
+static inline double radiusToHeight(double radius) {
+	return radius - earthRadius;
+}
+static inline size_t radiusToHeightIdx(double radius) {
+	return radiusToHeight(radius) / atmThick * dtransmitT_hDim;
+}
+static inline size_t cosToCosIdx(double cosine) {
+	return (1.0 + cosine) / 2.0 * dtransmitT_cosDim;
+}
+
+static inline double density(double dirCos, double initRadius, double initRadius2, double x) {
+	return exp(-(displacedRaidus(initRadius, initRadius2, dirCos, x) - earthRadius) / atmThick);
+}
 
 static unique_ptr<vec3[]> cookSingleScat(vec3* transmitT) {
 	unique_ptr<vec3[]> singleScatT(new vec3[intensity_hDim * intnesity_viewDim * intensity_sunDim]);
@@ -35,7 +84,7 @@ static unique_ptr<vec3[]> cookSingleScat(vec3* transmitT) {
 			vec3* arrj = arri + j * intensity_sunDim;
 			for (size_t k = 0; k < intensity_sunDim; ++k) {
 				double curSunCos = 1 - static_cast<double>(k) * sunCosStep;
-				arrj[k] = sunLight * (float)phaseFunRay(curSunCos) * vec3(rayScatCoef) / 4.f / PI<float> *integrate3(SingleScatAtten(curSunCos, curViewCos, curRadius, transmitT), 0, getHerizonAtmDepth(curRadius, curRadius2, curViewCos), 5.0);
+				arrj[k] = sunLight * (float)phaseFunRay(curSunCos) * vec3(rayScatCoef) / 4.f / PI<float> *integrate3(SingleScatAtten(curSunCos, curViewCos, curRadius, transmitT), 0, static_cast<float>(getHerizonAtmDepth(curRadius, curRadius2, curViewCos)), 5.0);
 			}
 		}
 	}
@@ -43,16 +92,9 @@ static unique_ptr<vec3[]> cookSingleScat(vec3* transmitT) {
 	return singleScatT;
 }
 
-
-template<typename T>
-static const T PI = acos(-1.0);
-
-const static vec3 sunLight = { 1.f, 1.f, 1.f };
 static inline dvec3 rayDisribut(double height) {
 	return rayScatCoef * exp(-height / 8000);
 }
-
-static constexpr size_t intensity_hDim = 32, intnesity_viewDim = 256, intensity_sunDim = 64;
 
 template<typename Fun>
 static vec3 integrate3(Fun fun, float from, float to, float step) {
@@ -72,13 +114,10 @@ static inline double cosineToSine(double cosine) {
 static inline double cosSum(double cos1, double cos2) {
 	return cos1 * cos2 - cosineToSine(cos1) * cosineToSine(cos2);
 }
-static inline double displacedRaidus(double initRadius, double initRadius2, double dirCos, double x) {
-	return sqrt(initRadius2 + pow(x, 2) - 2 * x * initRadius * dirCos);
-}
 static inline double sunDisplacedCos(double viewCos, double initRadius, double initRadius2, double sunCos, double x) {
 	return cosSum(displacedCos(initRadius, initRadius2, viewCos, x), sunCos);
 }
 
-double phaseFunRay(double cosine) {
+static inline double phaseFunRay(double cosine) {
 	return 3.0 / 4.0 * (1.0 + pow(cosine, 2));
 }
