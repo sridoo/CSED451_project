@@ -11,14 +11,45 @@
 #include "environment.hpp"
 #include "transmit.hpp"
 #include "Sun.hpp"
+#include "terminalMode.hpp"
 
 using namespace std;
 using namespace glm;
 
+bool isTerminalMode;
+
+void exeCmd(const UserCommand& cmd) {
+	switch (cmd.command)
+	{
+	case UserCommandType::timeSet:
+		curTime = cmd.val;
+		cout << "TimeSet command entered." << endl;
+		break;
+	case UserCommandType::timeFlowSet:
+		timeFlow = cmd.val;
+		cout << "TimeFlow command entered." << endl;
+		break;
+	case UserCommandType::exitTerminal:
+		glutKeyboardFunc(inRecKeyboardFunc);
+		cout << "TerminalMode exit command entered." << endl;
+		isTerminalMode = false;
+		break;
+	default:
+		break;
+	}
+}
+
 void idle() {
 	camIdle();
-	initInRec();
 	moveTime();
+	if (isTerminalMode)
+		exeCmd(Terminal::instance().read());
+	else if (tPressed()) {
+		cout << "Enter terminal mode." << endl;
+		isTerminalMode = true;
+		Terminal::instance().dispatchTerminalMode();
+	}
+	initInRec();
 }
 
 void display() {
@@ -26,8 +57,12 @@ void display() {
 	mat4 camMat = getCamMat();
 	drawEnvIter(camMat, glm::mat4(1));
 	Sun::instance().drawSunIter(camMat, glm::mat4(1));
+
+	if (isTerminalMode)
+		Terminal::instance().draw();
+
 	if (GLuint errVal = glGetError())
-		cerr << errVal << endl;
+		cerr << "glError: " << errVal << endl;
     glutSwapBuffers();
 }
 

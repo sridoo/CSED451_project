@@ -1,6 +1,6 @@
 #include "GL/glew.h"
 
-enum class UserCommandType {
+enum class UserCommandType : unsigned char {
 	none, timeSet, timeFlowSet, exitTerminal
 };
 
@@ -17,5 +17,5 @@ public:
 	void draw();
 	UserCommand read();
 	void dispatchTerminalMode();
-	Terminal& instance();
+	static Terminal& instance();
 };

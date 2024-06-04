@@ -1,9 +1,10 @@
 #include "GL/glew.h"
-#include "GL/glut.h"
+#include "GL/freeglut.h"
 
 #include "globalParams.hpp"
 
 float curTime = 15.f;
+float timeFlow = 0.3f;
 
 void moveTime(float timePassed) {
 	curTime += timePassed;
@@ -18,6 +19,6 @@ void moveTime() {
 	static int last = glutGet(GLUT_ELAPSED_TIME);
 	int elapsed = glutGet(GLUT_ELAPSED_TIME) - last;
 
-	curTime += static_cast<float>(elapsed) * 0.0003;
+	curTime += static_cast<float>(elapsed) * 0.001f * timeFlow;
 	last += elapsed;
 }

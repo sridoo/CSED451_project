@@ -5,10 +5,12 @@
 #include <sstream>
 #include <array>
 
+#include "GL/glew.h"
 #include "GL/glut.h"
 #include "glm/vec3.hpp"
-#include "terminalMode.hpp"
+
 #include "shaderParams.hpp"
+#include "terminalMode.hpp"
 
 using namespace std;
 using namespace glm;
@@ -17,7 +19,6 @@ static string terminalInput;
 static bool terminalInputDone;
 static bool terminalExitFlag;
 static string msg;
-static bool interpretingLast = false;
 static constexpr size_t maxStrLen = 30;
 
 
@@ -54,6 +55,14 @@ void Terminal::draw() {
 	glBindVertexArray(vaoID_);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, baoLen_);
 	glBindVertexArray(0);
+
+	glUseProgram(0);
+	glDisable(GL_DEPTH_TEST);
+	glColor3f(1.0, 1.0, 1.0);
+	glRasterPos2d(-1.0, -0.99);
+	for(auto c : msg + terminalInput)
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, c);
+	glEnable(GL_DEPTH_TEST);
 }
 
 UserCommand wrongInputFun() {
@@ -81,13 +90,16 @@ UserCommand Terminal::read() {
 
 	if (token == "cloudy")
 		;
-	else if (token == "time")
+	else if (token == "setTime")
 		val.command = UserCommandType::timeSet;
-	else if (token == "timeSpeed")
+	else if (token == "setTimeFlow")
 		val.command = UserCommandType::timeFlowSet;
+	else
+		return wrongInputFun();
 
 	if (!(line >> token))
-		wrongInputFun();
+		return wrongInputFun();
+
 	else try {
 		val.val = stof(token);
 	}
@@ -98,37 +110,55 @@ UserCommand Terminal::read() {
 	if(!line.eof())
 		return wrongInputFun();
 
-	msg = "Input command: ";
-	terminalInput.clear();
-	return val;
-}
+	switch (val.command)
+	{
+	case UserCommandType::timeSet:
+		if (val.val >= 24.f || val.val < 0.f)
+			return wrongInputFun();
+		break;
+	default:
+		break;
+	}
 
-void Terminal::dispatchTerminalMode() {
-	
+	msg = "Enter command: ";
+	terminalInput.clear();
+	terminalInputDone = false;
+	return val;
 }
 
 static void tm_keyboardFun(unsigned char key, int i, int y) {
 	//ignore input if you are still processing last input.
-	if (interpretingLast)
+	if (terminalInputDone)
 		return;
 
 	//tell input is finished when enter is pressed.
-	if (key == '\n') {
+	if (key == '\r') {
 		terminalInputDone = true;
 	}
 	//input is letter or dot used for decimal
 	else if (isalnum(key) || key == '.' || key == ' ') {
-		if(terminalInput.size() < maxStrLen)
+		if (terminalInput.size() < maxStrLen)
 			terminalInput.push_back(key);
 	}
 	//input is backspace
 	else if (key == '\b') {
-		if(!terminalInput.empty())
+		if (!terminalInput.empty())
 			terminalInput.pop_back();
 	}
 	else if (key == 27)
 		terminalExitFlag = true;
 	//ignore other inputs
+}
 
-	interpretingLast = false;
+void Terminal::dispatchTerminalMode() {
+	glutKeyboardFunc(tm_keyboardFun);
+	terminalInput.clear();
+	msg = "Enter command: ";
+	terminalInputDone = terminalExitFlag = false;
+}
+
+
+Terminal& Terminal::instance() {
+	static Terminal self;
+	return self;
 }
