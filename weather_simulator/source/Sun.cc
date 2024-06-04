@@ -6,7 +6,7 @@
 
 #include "Sun.hpp"
 #include "shaderParams.hpp"
-#include "transmit.hpp"
+#include "atmTextures.hpp"
 #include "globalParams.hpp"
 #include "camera.hpp"
 

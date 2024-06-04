@@ -2,6 +2,8 @@
 #include <ostream>
 #include <istream>
 
+#include "GL/glew.h"
+
 #include "glm/vec3.hpp"
 
 
@@ -14,12 +16,12 @@ public:
 	const glm::dvec3* get() const;
 	TransmitTable(std::istream& in);
 	const glm::dvec3& operator()(double radius, double consine) const;
-	std::unique_ptr<glm::vec3[]> toFloat() const;
+	std::unique_ptr<GLubyte[]> toRGB() const;
 };
-
 
 
 TransmitTable bakeTransmitTable();
 static constexpr size_t transmitT_hDim = 512, transmitT_cosDim = 512;
 void writeTransmitTableReadable(std::ostream& out, size_t lineLimit, const TransmitTable& table);
 void writeTransmitTable(std::ostream& out, const TransmitTable& table);
+void writeTransmitTableTex(std::ostream& out, const TransmitTable& table);

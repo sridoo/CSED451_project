@@ -9,7 +9,7 @@
 #include "camera.hpp"
 #include "inputRecorder.hpp"
 #include "environment.hpp"
-#include "transmit.hpp"
+#include "atmTextures.hpp"
 #include "Sun.hpp"
 #include "terminalMode.hpp"
 
@@ -41,7 +41,7 @@ void exeCmd(const UserCommand& cmd) {
 
 void idle() {
 	camIdle();
-	moveTime();
+	globalParamsIdle();
 	if (isTerminalMode)
 		exeCmd(Terminal::instance().read());
 	else if (tPressed()) {
@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
 
 	loadPrograms();
 	cout << "Loading shaders done. Now loading transmit table..." << std::endl;
-	initTransmitTableTexID();
+	loadAtmTextures();
 	cout << "Loading transmit table done. Start running program..." << std::endl;
 	glutIdleFunc(idle);
 	glutKeyboardFunc(inRecKeyboardFunc);

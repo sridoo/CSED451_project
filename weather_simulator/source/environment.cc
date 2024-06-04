@@ -56,11 +56,12 @@ static GLuint makeTexID(const char* filePath) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	// 텍스처 로드 및 생성
 	int width, height, nrChannels;
+	stbi_set_flip_vertically_on_load(true);
 	unsigned char* data = stbi_load(filePath, &width, &height, &nrChannels, 0);
 	if (data)
 	{
 		GLint format = (nrChannels == 3 ? GL_RGB : GL_RGBA);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else
@@ -73,7 +74,7 @@ static GLuint makeTexID(const char* filePath) {
 }
 
 
-static class Plain final {
+class Plain final {
 	GLuint vao, textureID, baoLen;
 	Plain();
 
@@ -132,7 +133,7 @@ void Plain::drawIter(const mat4& intrinsicMat, const mat4& exTrinsicMat) {
 	glBindVertexArray(0);
 }
 
-static class Tree final {
+class Tree final {
 	//vaoID, textureID, eboLen;
 	vector<array<GLuint, 3>> vaoIDs;
 	mat4 modelTr;
@@ -210,7 +211,7 @@ void Tree::drawIter(const mat4& intrinsicMat, const mat4& exTrinsicMat) {
 	for (auto& [vao, textureID, eboLen] : vaoIDs) {
 		glBindVertexArray(vao);
 		glBindTexture(GL_TEXTURE_2D, textureID);
-		glDrawArrays(GL_TRIANGLES, 0, eboLen);
+		glDrawElements(GL_TRIANGLES, eboLen, GL_UNSIGNED_INT, 0);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindVertexArray(0);
 	}
@@ -231,7 +232,7 @@ EnvProto& EnvProto::instance() {
 }
 
 EnvProto::EnvProto() {
-	treeCoords = { {0, 0, 0} };
+	treeCoords = { {5.f, 0, 5.f}, {5.f, 0, -5.f}, {-5.f, 0, -5.f}, {-5.f, 0, -5.f} };
 }
 
 

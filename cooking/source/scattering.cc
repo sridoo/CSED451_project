@@ -48,6 +48,10 @@ static inline double density(double dirCos, double initRadius, double initRadius
 	return exp(-(displacedRaidus(initRadius, initRadius2, dirCos, x) - earthRadius) / atmThick);
 }
 
+static void bakeSingleScatPart(dvec3* singleScatT, size_t from, size_t end, const TransmitTable& transmitT) {
+
+}
+
 static unique_ptr<vec3[]> cookSingleScat(vec3* transmitT) {
 	unique_ptr<vec3[]> singleScatT(new vec3[intensity_hDim * intnesity_viewDim * intensity_sunDim]);
 	constexpr double heightStep = atmThick / intensity_hDim,

@@ -6,8 +6,7 @@
 using namespace std;
 
 int main() {
-	ifstream fileRead(".\\resource\\transmitTable.cache", std::ios::binary);
-	TransmitTable transmitTable(fileRead);
-	cout << "readDone" << endl;
-	writeTransmitTableReadable(cout, 100000, transmitTable);
+	ifstream transmitCache(".\\resource\\transmitTable.cache", ios::binary);
+	TransmitTable transmitTable(transmitCache);
+
 }
