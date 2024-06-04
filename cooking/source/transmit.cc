@@ -53,7 +53,7 @@ void bakeTransmitTPart(dvec3* transmitT, size_t from, size_t end) {
 TransmitTable bakeTransmitTable() {
 	unique_ptr<dvec3[]> transmitT(new dvec3[transmitT_hDim * transmitT_cosDim]);
 
-	size_t nThreads = jthread::hardware_concurrency();
+	size_t nThreads = thread::hardware_concurrency();
 	vector<thread> threads;
 	threads.reserve(nThreads);
 	size_t blockSize = transmitT_hDim / nThreads;

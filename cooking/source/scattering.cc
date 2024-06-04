@@ -19,17 +19,6 @@ static constexpr double dtransmitT_hDim = transmitT_hDim, dtransmitT_cosDim = tr
 static constexpr size_t intensity_hDim = 32, intnesity_viewDim = 256, intensity_sunDim = 64;
 static const vec3 sunLight{ 1.f, 1.f, 1.f };
 
-class Density {
-	const double dirCos_, initRadius_, initRadius2_;
-public:
-	Density(double dirCos, double initRadius, double initRadius2)
-		: dirCos_(dirCos), initRadius_(initRadius), initRadius2_(initRadius2) {}
-
-	double operator()(double x) {
-		return displacedDensity(dirCos_, initRadius_, initRadius2_, x);
-	}
-};
-
 static inline double displacedCos(double initRadius, double initRadius2, double dirCos, double x) {
 	return (initRadius - dirCos * x) / displacedRaidus(initRadius, initRadius2, dirCos, x);
 }
@@ -94,10 +83,6 @@ static unique_ptr<vec3[]> cookSingleScat(vec3* transmitT) {
 	}
 
 	return singleScatT;
-}
-
-static inline dvec3 rayDisribut(double height) {
-	return rayScatCoef * exp(-height / 8000);
 }
 
 template<typename Fun>
