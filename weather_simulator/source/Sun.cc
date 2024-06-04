@@ -30,7 +30,7 @@ Sun::Sun() {
 
 	for (size_t i = 1; i < verts_.size(); ++i) {
 		float angle = static_cast<float>(i) * angleStep;
-		verts_[i] = { mapWidthHalf, sunRaidus * sinf(angle), sunRaidus * cosf(angle) };
+		verts_[i] = { mapWidthHalf - 1.f, sunRaidus * sinf(angle), sunRaidus * cosf(angle) };
 	}
 
 	glCreateVertexArrays(1, &vaoID_);

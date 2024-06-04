@@ -22,7 +22,8 @@ public:
 
 
 TransmitTable bakeTransmitTable();
-static constexpr size_t transmitT_hDim = 512, transmitT_cosDim = 512;
+constexpr size_t transmitT_hDim = 512, transmitT_cosDim = 512;
+constexpr size_t nTransmitElem = transmitT_hDim * transmitT_cosDim;
 void writeTransmitTableReadable(std::ostream& out, size_t lineLimit, const TransmitTable& table);
 void writeTransmitTable(std::ostream& out, const TransmitTable& table);
 void writeTransmitTableTex(std::ostream& out, const TransmitTable& table);

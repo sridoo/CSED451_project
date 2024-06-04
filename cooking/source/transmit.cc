@@ -105,7 +105,7 @@ const dvec3* TransmitTable::get() const{
 }
 
 const dvec3& TransmitTable::operator()(double radius, double cosine) const {
-	return val[size_t((radius - earthRadius) / atmThick * dtransmitT_hDim) * transmitT_cosDim + size_t((1.0 + cosine) / 2.0 * dtransmitT_cosDim)];
+	return val[size_t((radius - earthRadius) / heightStep) * transmitT_cosDim + size_t((1.0 - cosine) / cosStep)];
 }
 
 void toRGBPart(GLubyte* rgbTransmitT, const dvec3* dtransmitT, size_t from, size_t end) {

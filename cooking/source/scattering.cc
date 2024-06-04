@@ -21,8 +21,11 @@ static inline double displacedCos(double initRadius, double initRadius2, double 
 static inline double cosSum(double cos1, double cos2) {
 	return cos1 * cos2 - cosineToSine(cos1) * cosineToSine(cos2);
 }
+static inline double cosSub(double cos1, double cos2) {
+	return cos1 * cos2 + cosineToSine(cos1) * cosineToSine(cos2);
+}
 static inline double phaseFunRay(double cosine) {
-	return 8.0 / 10.0 * (7.0 / 5.0 + cosine / 2.0);
+	return 3.0 / 4.0 * (1.0 + pow(cosine, 2));
 }
 
 const double PI = acos(-1.0);
@@ -53,10 +56,10 @@ public:
 	dvec3 operator()(double x) {
 		double newHeight = displacedRaidus(initRadius_, initRadius2_, viewCos_, x),
 			displacedCosine = displacedCos(initRadius_, initRadius2_, viewCos_, x);
-		return displacedDensity(viewCos_, initRadius_, initRadius2_, x)
-			* transmitInit_
+		return displacedDensity(viewCos_, initRadius_, initRadius2_, x) *
+			transmitInit_
 			/ transmitTable_(newHeight, cosSum(viewCos_, displacedCosine))
-			* transmitTable_(newHeight, cosSum(sunCos_, displacedCosine));
+			* transmitTable_(newHeight, -cosSum(sunCos_, displacedCosine));
 	}
 };
 
@@ -67,18 +70,19 @@ viewCosStep = 2.0 / dintensity_viewDim,
 sunCosStep = 2.0 / dintensity_sunDim;
 
 static void bakeSingleScatterPart(dvec3* out, size_t from, size_t to, const TransmitTable* const transmitTable) {
-	for (size_t i = from; i < to; i++) {
-		const double curRadius = earthRadius + static_cast<double>(i) * heightStep;
-		const double curRadius2 = pow(curRadius, 2);
-		dvec3* const arrh = out + i * intensity_viewDim * intensity_sunDim;
 
-		for (size_t j = 0; j < intensity_sunDim; ++j) {
-			const double curSunCos = 1 - static_cast<double>(j) * sunCosStep;
+	for (size_t i = from; i < to; i++) {
+		const double curSunCos = 1.0 - static_cast<double>(i) * sunCosStep;
+		dvec3* const arrh = out + i * intensity_viewDim * intensity_hDim;
+
+		for (size_t j = 0; j < intensity_hDim; ++j) {
+			const double curRadius = earthRadius + static_cast<double>(j) * heightStep;
+			const double curRadius2 = pow(curRadius, 2);
 			dvec3* const arrv = arrh + j * intensity_viewDim;
 
 			for (size_t k = 0; k < intensity_viewDim; ++k) {
-				double curViewCos = 1 - static_cast<double>(k) * viewCosStep;
-				arrv[k] = phaseFunRay(curSunCos) * rayScatCoef / 4.0 / PI
+				double curViewCos = 1.0 - static_cast<double>(k) * viewCosStep;
+				arrv[k] = phaseFunRay(cosSub(curViewCos, curSunCos)) * rayScatCoef / 4.0 / PI
 					* integrate3(SingleScatAtten(curSunCos, curViewCos, curRadius, *transmitTable), 0, getHerizonAtmDepth(curRadius, curRadius2, curViewCos), 15.0);
 			}
 		}
@@ -86,18 +90,18 @@ static void bakeSingleScatterPart(dvec3* out, size_t from, size_t to, const Tran
 }
 
 static ScatterTable bakeSingleScatterTable(const TransmitTable& transmitTable) {
-	unique_ptr<dvec3[]> singleScatT(new dvec3[intensity_hDim * intensity_viewDim * intensity_sunDim]);
+	unique_ptr<dvec3[]> singleScatT(new dvec3[nIntensityElems]);
 
 	size_t nThreads = thread::hardware_concurrency();
 	vector<thread> threads;
 	threads.reserve(nThreads);
 
-	size_t baseWorkLoad = intensity_hDim / nThreads;
-	size_t additionalLoadStart = intensity_hDim - baseWorkLoad * nThreads;
-
-	for (size_t i = 0, next, j = 0; i < intensity_hDim; i = next, j++) {
-		next = i + baseWorkLoad + (j < additionalLoadStart);
-		threads.emplace_back(bakeSingleScatterPart, singleScatT.get(), i, next, &transmitTable);
+	size_t baseWorkLoad = intensity_sunDim / nThreads;
+	size_t leftLoad = intensity_sunDim - baseWorkLoad * nThreads;
+	for (size_t i = 0, j = 0; i < nThreads; i++) {
+		size_t next = j + baseWorkLoad + (i < leftLoad);
+		threads.emplace_back(bakeSingleScatterPart, singleScatT.get(), j, next, &transmitTable);
+		j = next;
 	}
 
 	for (auto& i : threads)
@@ -110,66 +114,55 @@ ScatterTable bakeScatterTable(const TransmitTable& transmitTable) {
 	return bakeSingleScatterTable(transmitTable);
 }
 
-static void toRGBPart(GLubyte* out, dvec3* table, size_t from, size_t to) {
-	for (size_t i = from; i < to; i++) {
-		const double curRadius = earthRadius + static_cast<double>(i) * heightStep;
-		const double curRadius2 = pow(curRadius, 2);
-		size_t off = i * intensity_viewDim * intensity_sunDim;
-		const dvec3* const arrh = table + off;
-		GLubyte* const arrRgbi = out + off * 3;
-
-		for (size_t j = 0; j < intensity_sunDim; ++j) {
-			const double curSunCos = 1 - static_cast<double>(j) * sunCosStep;
-			size_t offj = j * intensity_viewDim;
-			const dvec3* const arrv = arrh + offj;
-			GLubyte* const arrRgbj = arrRgbi + offj * 3;
-
-			for (size_t k = 0; k < intensity_viewDim; ++k) {
-				GLubyte* const rgbElem = arrRgbj + 3 * k;
-				rgbElem[0] = static_cast<GLubyte>(arrv[k].x * 255.0);
-				rgbElem[1] = static_cast<GLubyte>(arrv[k].y * 255.0);
-				rgbElem[2] = static_cast<GLubyte>(arrv[k].z * 255.0);
-			}
-		}
+static void toRGBPart(GLubyte* out, dvec3* in, size_t from, size_t to) {
+	while (from < to) {
+		GLubyte* const rgbElem = out + 3 * from;
+		rgbElem[0] = static_cast<GLubyte>(std::min(in[from].x * 255.0 * 30, 255.0));
+		rgbElem[1] = static_cast<GLubyte>(std::min(in[from].y * 255.0 * 30, 255.0));
+		rgbElem[2] = static_cast<GLubyte>(std::min(in[from].z * 255.0 * 30, 255.0));
+		if (rgbElem[1] > rgbElem[2])
+			throw 1;
+		from++;
 	}
 }
 
 void writeScatterTableTex(ostream& out, const ScatterTable& scatterTable) {
-	unique_ptr<GLubyte[]> rgbVal(new GLubyte[intensity_hDim* intensity_viewDim * intensity_sunDim * 3]);
+	unique_ptr<GLubyte[]> rgbVal(new GLubyte[nIntensityElems * 3]);
 
 	size_t nThreads = thread::hardware_concurrency();
 	vector<thread> threads;
 	threads.reserve(nThreads);
 
-	size_t baseWorkLoad = intensity_hDim / nThreads;
-	size_t additionalLoadStart = intensity_hDim - baseWorkLoad * nThreads;
+	size_t baseWorkLoad = nIntensityElems / nThreads;
+	size_t leftLoad = nIntensityElems - baseWorkLoad * nThreads;
 
-	for (size_t i = 0, next, j = 0; i < intensity_hDim; i = next, j++) {
-		next = i + baseWorkLoad + (j < additionalLoadStart);
-		threads.emplace_back(toRGBPart, rgbVal.get(), scatterTable.get(), i, next);
+	for (size_t i = 0, j = 0; i < nThreads; i++) {
+		size_t next = j + baseWorkLoad + (i < leftLoad);
+		threads.emplace_back(toRGBPart, rgbVal.get(), scatterTable.get(), j, next);
+		j = next;
 	}
 
 	for (auto& i : threads)
 		i.join();
 
-	out.write((const char*)rgbVal.get(), intensity_hDim * intensity_viewDim * intensity_sunDim * 3);
+	out.write((const char*)rgbVal.get(), nIntensityElems * 3);
 }
 
 
 void writeScatterTReadable(std::ostream& out, size_t maxLines, const ScatterTable& scatterTable) {
 	size_t count = 0;
-	for (size_t i = 0; i < intensity_hDim; i++) {
-		const double curRadius = earthRadius + static_cast<double>(i) * heightStep;
-		const double curRadius2 = pow(curRadius, 2);
-		dvec3* const arrh = scatterTable.get() + i * intensity_viewDim * intensity_sunDim;
+	for (size_t i = 0; i < intensity_sunDim; ++i) {
+		const double curSunCos = 1 - static_cast<double>(i) * sunCosStep;
+		dvec3* const arrh = scatterTable.get() + i * intensity_viewDim * intensity_hDim;
+		out << "SunCosine=" << curSunCos << endl;
+
+		for (size_t j = 0; j < intensity_hDim; j++) {
+			const double curRadius = earthRadius + static_cast<double>(i) * heightStep;
+			const double curRadius2 = pow(curRadius, 2);
 		
-		out << "Height=" << curRadius - earthRadius << endl;
+			out << "Height=" << curRadius - earthRadius << endl;
 
-		for (size_t j = 0; j < intensity_sunDim; ++j) {
-			const double curSunCos = 1 - static_cast<double>(j) * sunCosStep;
 			dvec3* const arrv = arrh + j * intensity_viewDim;
-
-			out << "SunCosine=" << curSunCos << endl;
 
 			for (size_t k = 0; k < intensity_viewDim; ++k) {
 				double curViewCos = 1 - static_cast<double>(k) * viewCosStep;
@@ -183,11 +176,11 @@ void writeScatterTReadable(std::ostream& out, size_t maxLines, const ScatterTabl
 }
 
 void writeScatterTable(std::ostream& out, const ScatterTable& scatterTable) {
-	out.write((char*)scatterTable.get(), intensity_hDim * intensity_viewDim * intensity_sunDim * sizeof(dvec3));
+	out.write((char*)scatterTable.get(), nIntensityElems * sizeof(dvec3));
 }
 
-ScatterTable readScatterTable(std::istream& in, const ScatterTable& scatterTable) {
-	unique_ptr<dvec3[]> singleScatT(new dvec3[intensity_hDim * intensity_viewDim * intensity_sunDim]);
-	in.read((char*)singleScatT.get(), intensity_hDim * intensity_viewDim * intensity_sunDim * sizeof(dvec3));
+ScatterTable readScatterTable(std::istream& in) {
+	unique_ptr<dvec3[]> singleScatT(new dvec3[nIntensityElems]);
+	in.read((char*)singleScatT.get(), nIntensityElems * sizeof(dvec3));
 	return singleScatT;
 }

@@ -1,5 +1,6 @@
 #include<array>
 #include <cmath>
+#include <iostream>
 
 #include "glm/vec3.hpp"
 #include "glm/gtc/type_ptr.hpp"
@@ -79,7 +80,7 @@ void SkyBox::drawSkyBoxIter(const mat4& intrinsicMat) {
 
 	glUniformMatrix4fv(SkyBoxProgramParam::inTr, 1, GL_FALSE, value_ptr(intrinsicMat));
 	glUniform1f(SkyBoxProgramParam::viewHeight, camPos.y / 8000.f);
-	glUniform1f(SkyBoxProgramParam::sunCos, sunLightDir.y / sqrt(pow(sunLightDir.x, 2) + pow(sunLightDir.y, 2) + pow(sunLightDir.z, 2)));
+	glUniform1f(SkyBoxProgramParam::sunCos, 0.5 - sunLightDir.y / sqrt(pow(sunLightDir.x, 2.f) + pow(sunLightDir.y, 2.f) + pow(sunLightDir.z, 2.f)) / 2.f);
 	
 	glDrawArrays(GL_TRIANGLES, 0, aboLen_);
 	glBindVertexArray(0);
