@@ -23,7 +23,6 @@ Sun& Sun::instance() {
 
 Sun::Sun() {
 	array<vec3, 66> verts_;
-	constexpr float mapWidthHalf = mapWidth / 2.f;
 	aboLen_ = verts_.size();
 	verts_[0] = { mapWidthHalf, 0, 0};
 
@@ -61,7 +60,7 @@ void Sun::drawSunIter(const mat4& intrinsicMat, const mat4& exTrinsicMat) {
 	glBindVertexArray(vaoID_);
 	glUniformMatrix4fv(SunProgramParam::inTr, 1, GL_FALSE, value_ptr(intrinsicMat));
 	glUniformMatrix4fv(SunProgramParam::exTr, 1, GL_FALSE, value_ptr(tr));
-	glUniform1f(SunProgramParam::vViewHeight, camPos.y);
+	glUniform1f(SunProgramParam::viewHeight, camPos.y / 8000.f);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, aboLen_);
 	glBindVertexArray(0);
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GL/glew.h"
 #include "glm/vec3.hpp"
 #include "glm/vec2.hpp"
 
@@ -29,7 +30,7 @@ namespace StaticObjProgramParam {
 namespace SunProgramParam {
 	enum SunProgramPram : GLuint {
 		vPos, vEnd,
-		inTr = 0, exTr = 4, texture = 8, vViewHeight = 9
+		inTr = 0, exTr = 4, texture = 8, viewHeight = 9
 	};
 }
 
@@ -39,8 +40,16 @@ namespace TerminalProgramParam {
 	};
 }
 
+namespace SkyBoxProgramParam {
+	enum {
+		vPos, vEnd,
+		viewHeight = 0, inTr, sunCos = 5, intensityTex
+	};
+}
+
 void vertexAttribPointerForStaticObj(GLuint vao);
 
 extern GLuint staticObjProgram;
 extern GLuint sunProgram;
 extern GLuint terminalProgram;
+extern GLuint skyBoxProgram;

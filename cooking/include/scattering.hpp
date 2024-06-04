@@ -1,8 +1,17 @@
 #pragma once
-#include <glm/glm.hpp>
+#include <memory>
+#include <istream>
+#include<ostream>
 
-static inline double cosineToSine(double cosine);
-static inline double cosSum(double cos1, double cos2);
-static inline double displacedRaidus(double initRadius, double initRadius2, double dirCos, double x);
-static inline double sunDisplacedCos(double viewCos, double initRadius, double initRadius2, double sunCos, double x);
-static inline double phaseFunRay(double cosine);
+#include "glm/vec3.hpp"
+
+#include "transmit.hpp"
+
+constexpr size_t intensity_hDim = 32, intensity_viewDim = 256, intensity_sunDim = 64;
+using ScatterTable = std::unique_ptr<glm::dvec3[]>;
+
+std::unique_ptr<glm::dvec3[]> bakeScatterTable(const TransmitTable& transmitTable);
+void writeScatterTableTex(std::ostream& out, const ScatterTable& scatterTable);
+void writeScatterTable(std::ostream& out, const ScatterTable& scatterTable);
+void writeScatterTReadable(std::ostream& out, size_t maxLines, const ScatterTable& scatterTable);
+ScatterTable readScatterTable(std::istream& in, const ScatterTable& scatterTable);

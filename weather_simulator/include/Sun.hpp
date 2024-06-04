@@ -9,5 +9,5 @@ class Sun {
 
 public:
 	static Sun& instance();
-	void drawSunIter(const glm::mat4& intrinsicMat, const glm::mat4& exTrinsicMat);
+	void drawSunIter(const glm::mat4& intrinsicMat, const glm::mat4& extrinsicMat);
 };

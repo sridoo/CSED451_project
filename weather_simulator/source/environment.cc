@@ -100,13 +100,13 @@ Plain::Plain() {
 void Plain::initVAO() {
 	const array<BAOelem, 4> bao = {
 		//farLeft
-		BAOelem{{-mapWidth / 2.0f, 0.f, -mapWidth / 2.0f}, {0, 1, 0}, {-mapWidth / 2.0f, -mapWidth / 2.0f}},
+		BAOelem{{-mapWidthHalf, 0.f, -mapWidthHalf}, {0, 1, 0}, {-mapWidthHalf, -mapWidthHalf}},
 		//FarRight
-		{{mapWidth / 2.0f, 0.f, -mapWidth / 2.0f}, {0, 1, 0}, {mapWidth / 2.0f, -mapWidth / 2.0f}},
+		{{mapWidthHalf, 0.f, -mapWidthHalf}, {0, 1, 0}, {mapWidthHalf, -mapWidthHalf}},
 		//closeRight
-		{{mapWidth / 2.0f, 0.f, mapWidth / 2.0f}, {0, 1, 0}, {mapWidth / 2.0f, mapWidth / 2.0f}},
+		{{mapWidthHalf, 0.f, mapWidthHalf}, {0, 1, 0}, {mapWidthHalf, mapWidthHalf}},
 		//closeLeft
-		{{-mapWidth / 2.0f, 0.f, mapWidth / 2.0f}, {0, 1, 0}, {-mapWidth / 2.0f, mapWidth / 2.0f}}
+		{{-mapWidthHalf, 0.f, mapWidthHalf}, {0, 1, 0}, {-mapWidthHalf, mapWidthHalf}}
 	};
 
 	baoLen = bao.size();
@@ -204,6 +204,8 @@ Tree::Tree() {
 			-0.5f * (mbr[0].z + mbr[1].z),
 		}
 	);
+
+	glDeleteBuffers(boIDs.size(), boIDs.data());
 }
 
 void Tree::drawIter(const mat4& intrinsicMat, const mat4& exTrinsicMat) {

@@ -105,7 +105,7 @@ const dvec3* TransmitTable::get() const{
 }
 
 const dvec3& TransmitTable::operator()(double radius, double cosine) const {
-	return val[size_t((radius - earthRadius) / atmThick * dtransmitT_hDim * dtransmitT_cosDim) + size_t((1.0 + cosine) / 2.0 * dtransmitT_cosDim)];
+	return val[size_t((radius - earthRadius) / atmThick * dtransmitT_hDim) * transmitT_cosDim + size_t((1.0 + cosine) / 2.0 * dtransmitT_cosDim)];
 }
 
 void toRGBPart(GLubyte* rgbTransmitT, const dvec3* dtransmitT, size_t from, size_t end) {
@@ -127,7 +127,7 @@ void toRGBPart(GLubyte* rgbTransmitT, const dvec3* dtransmitT, size_t from, size
 unique_ptr<GLubyte[]> TransmitTable::toRGB() const {
 	unique_ptr<GLubyte[]> rgbVal(new GLubyte[transmitT_hDim * transmitT_cosDim * 3]);
 
-	size_t nThreads = jthread::hardware_concurrency();
+	size_t nThreads = thread::hardware_concurrency();
 	vector<thread> threads;
 	threads.reserve(nThreads);
 	size_t blockSize = transmitT_hDim / nThreads;

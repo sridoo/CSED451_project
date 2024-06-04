@@ -13,3 +13,4 @@ void vertexAttribPointerForStaticObj(GLuint vao){
 GLuint staticObjProgram;
 GLuint sunProgram;
 GLuint terminalProgram;
+GLuint skyBoxProgram;

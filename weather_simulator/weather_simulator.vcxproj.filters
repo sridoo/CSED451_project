@@ -76,9 +76,6 @@
     <ClCompile Include="source\atmTextures.cc">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="source\atmParams.cc">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="source\Sun.cc">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -86,6 +83,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="source\terminalMode.cc">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SkyBox.cc">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -127,6 +127,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\terminalMode.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SkyBox.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

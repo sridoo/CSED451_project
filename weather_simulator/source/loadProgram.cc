@@ -95,4 +95,5 @@ void loadPrograms() {
     staticObjProgram = loadProgram(".\\shaders\\staticObj.vert", ".\\shaders\\staticObj.frag");
     sunProgram = loadProgram(".\\shaders\\sun.vert", ".\\shaders\\sun.frag");
     terminalProgram = loadProgram(".\\shaders\\terminal.vert", ".\\shaders\\terminal.frag");
+    skyBoxProgram = loadProgram(".\\shaders\\skyBox.vert", ".\\shaders\\skyBox.frag");
 }

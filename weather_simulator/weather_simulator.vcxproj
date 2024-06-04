@@ -170,7 +170,6 @@
     <None Include="shaders\terminal.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\atmParams.cc" />
     <ClCompile Include="source\camera.cc" />
     <ClCompile Include="source\environment.cc" />
     <ClCompile Include="source\globalParams.cc" />
@@ -179,6 +178,7 @@
     <ClCompile Include="source\main.cc" />
     <ClCompile Include="source\readObjFile.cc" />
     <ClCompile Include="source\shaderParams.cc" />
+    <ClCompile Include="source\SkyBox.cc" />
     <ClCompile Include="source\stb_image.c" />
     <ClCompile Include="source\Sun.cc" />
     <ClCompile Include="source\terminalMode.cc" />
@@ -194,6 +194,7 @@
     <ClInclude Include="include\loadProgram.hpp" />
     <ClInclude Include="include\readObjFile.hpp" />
     <ClInclude Include="include\shaderParams.hpp" />
+    <ClInclude Include="include\SkyBox.hpp" />
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\Sun.hpp" />
     <ClInclude Include="include\terminalMode.hpp" />

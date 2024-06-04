@@ -12,6 +12,7 @@
 #include "atmTextures.hpp"
 #include "Sun.hpp"
 #include "terminalMode.hpp"
+#include "SkyBox.hpp"
 
 using namespace std;
 using namespace glm;
@@ -57,6 +58,7 @@ void display() {
 	mat4 camMat = getCamMat();
 	drawEnvIter(camMat, glm::mat4(1));
 	Sun::instance().drawSunIter(camMat, glm::mat4(1));
+	SkyBox::instance().drawSkyBoxIter(camMat);
 
 	if (isTerminalMode)
 		Terminal::instance().draw();

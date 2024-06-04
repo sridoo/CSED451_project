@@ -1,17 +1,18 @@
 #include<fstream>
 #include <memory>
 
-#include "atmParams.hpp"
 #include "atmTextures.hpp"
 
 using namespace std;
 
 GLuint transmitTableTexID;
+GLuint intensityTableTexID;
 
 
 static constexpr size_t transmitT_hDim = 512, transmitT_cosDim = 512;
+static constexpr size_t intensity_hDim = 32, intensity_viewDim = 256, intensity_sunDim = 64;
 
-void loadTransmitTableTexID() {
+static void loadTransmitTableTex() {
 	ifstream transmitCache(".\\resource\\atmData\\transmitTableTex.tex", std::ios::binary);
 	unique_ptr<GLubyte[]> texture(new GLubyte[transmitT_hDim * transmitT_cosDim * 3]);
 	transmitCache.read((char*)texture.get(), transmitT_hDim * transmitT_cosDim * 3 * sizeof(GLubyte));
@@ -30,6 +31,27 @@ void loadTransmitTableTexID() {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+static void loadIntensityTableTex() {
+	ifstream texFile(".\\resource\\atmData\\singleScatterTex.tex", std::ios::binary);
+	unique_ptr<GLubyte[]> texture(new GLubyte[intensity_hDim * intensity_viewDim * intensity_sunDim * 3]);
+	texFile.read((char*)texture.get(), intensity_hDim * intensity_viewDim * intensity_sunDim * 3 * sizeof(GLubyte));
+
+	glGenTextures(1, &intensityTableTexID);
+	glBindTexture(GL_TEXTURE_3D, intensityTableTexID);
+
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+
+	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB, intensity_viewDim, intensity_sunDim, intensity_hDim, 0, GL_RGB, GL_UNSIGNED_BYTE, texture.get());
+	glGenerateMipmap(GL_TEXTURE_3D);
+	glBindTexture(GL_TEXTURE_3D, 0);
+}
+
 void loadAtmTextures() {
-	loadTransmitTableTexID();
+	loadTransmitTableTex();
+	loadIntensityTableTex();
 }
