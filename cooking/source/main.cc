@@ -8,9 +8,9 @@
 using namespace std;
 
 int main() {
-	ifstream scatterCache(".\\resource\\singleScatter.cache", ios::binary);
-	auto scatterT = readScatterTable(scatterCache);
+	ifstream transmitCache(".\\resource\\transmitTable.cache", ios::binary);
+	TransmitTable transmitTable(transmitCache);
+	auto scatterT = bakeScatterTable(transmitTable);
 	ofstream singleScatterTex(".\\resource\\singleScatterTex.tex");
 	writeScatterTableTex(singleScatterTex, scatterT);
-	writeScatterTReadable(std::cout, 10000, scatterT);
 }

@@ -8,8 +8,8 @@
 using namespace glm;
 
 static const float PI = std::acosf(-1.f);
-float curTime = 15.f;
-float timeFlow = 0.3f;
+float curTime = 12.f;
+float timeFlow = 0.1f;
 vec3 sunLightDir;
 
 void moveTime(float timePassed) {

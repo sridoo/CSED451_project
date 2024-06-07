@@ -24,4 +24,4 @@ inline double displacedDensity(double dirCos, double initRadius, double initRadi
 	return exp(-(displacedRaidus(initRadius, initRadius2, dirCos, x) - earthRadius) / atmThick);
 }
 
-const glm::dvec3 rayScatCoef = { 5.6 * pow(10, -6.0), 1.35 * pow(10, -5.0), 3.31 * pow(10, -5.0) };
+const glm::dvec3 rayScatCoef = { 5.6E-6, 1.35E-5, 3.31E-5 };

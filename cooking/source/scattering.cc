@@ -46,20 +46,22 @@ class SingleScatAtten {
 	const dvec3& transmitInit_;
 	const TransmitTable& transmitTable_;
 public:
-	SingleScatAtten(double sunCos, double viewCos, double initRadius, const TransmitTable& transmitTable)
+	SingleScatAtten(double sunCos, double viewCos, double initRadius, double initRaidus2, const TransmitTable& transmitTable)
 		: initRadius_(initRadius),
-		initRadius2_(pow(initRadius, 2)), viewCos_(viewCos), sunCos_(sunCos),
+		initRadius2_(initRaidus2), viewCos_(viewCos), sunCos_(sunCos),
 		transmitInit_{ transmitTable(initRadius, viewCos) },
 		transmitTable_{ transmitTable }
 	{}
 
 	dvec3 operator()(double x) {
-		double newHeight = displacedRaidus(initRadius_, initRadius2_, viewCos_, x),
+		double newRaidus = displacedRaidus(initRadius_, initRadius2_, viewCos_, x),
 			displacedCosine = displacedCos(initRadius_, initRadius2_, viewCos_, x);
-		return displacedDensity(viewCos_, initRadius_, initRadius2_, x) *
-			transmitInit_
-			/ transmitTable_(newHeight, cosSum(viewCos_, displacedCosine))
-			* transmitTable_(newHeight, -cosSum(sunCos_, displacedCosine));
+		double displacedSunCos = cosSum(displacedCosine, sunCos_);
+		return phaseFunRay(cosineToSine(displacedSunCos))
+			* displacedDensity(viewCos_, initRadius_, initRadius2_, x)
+			* transmitInit_
+			/ transmitTable_(newRaidus, cosSum(viewCos_, displacedCosine))
+		*transmitTable_(newRaidus, -displacedSunCos);
 	}
 };
 
@@ -82,8 +84,8 @@ static void bakeSingleScatterPart(dvec3* out, size_t from, size_t to, const Tran
 
 			for (size_t k = 0; k < intensity_viewDim; ++k) {
 				double curViewCos = 1.0 - static_cast<double>(k) * viewCosStep;
-				arrv[k] = phaseFunRay(cosSub(curViewCos, curSunCos)) * rayScatCoef / 4.0 / PI
-					* integrate3(SingleScatAtten(curSunCos, curViewCos, curRadius, *transmitTable), 0, getHerizonAtmDepth(curRadius, curRadius2, curViewCos), 15.0);
+				arrv[k] = 0.25 / PI * rayScatCoef
+					* integrate3(SingleScatAtten(curSunCos, curViewCos, curRadius, curRadius2, *transmitTable), 0, getHerizonAtmDepth(curRadius, curRadius2, curViewCos), 15.0);
 			}
 		}
 	}
@@ -120,8 +122,6 @@ static void toRGBPart(GLubyte* out, dvec3* in, size_t from, size_t to) {
 		rgbElem[0] = static_cast<GLubyte>(std::min(in[from].x * 255.0 * 30, 255.0));
 		rgbElem[1] = static_cast<GLubyte>(std::min(in[from].y * 255.0 * 30, 255.0));
 		rgbElem[2] = static_cast<GLubyte>(std::min(in[from].z * 255.0 * 30, 255.0));
-		if (rgbElem[1] > rgbElem[2])
-			throw 1;
 		from++;
 	}
 }
