@@ -13,7 +13,8 @@ static constexpr double dtransmitT_hDim = transmitT_hDim, dtransmitT_cosDim = tr
 template<typename T>
 static double integrate(T fun, double from, double to, double step) {
 	double val = 0, last = fun(from);
-	for (double i = from + step; i < to; i += step) {
+	const double iend = to + step * 0.5;
+	for (double i = from + step; i < iend; i += step) {
 		double cur = fun(i);
 		val += step * (last + cur) / 2.f;
 		last = cur;

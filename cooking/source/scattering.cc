@@ -33,7 +33,8 @@ const double PI = acos(-1.0);
 template<typename Fun>
 static dvec3 integrate3(Fun fun, double from, double to, double step) {
 	dvec3 val = {}, last = fun(from);
-	for (double i = from + step; i < to; i += step) {
+	const double iend = to + step * 0.5;
+	for (double i = from + step; i < iend; i += step) {
 		dvec3 cur = fun(i);
 		val += step * (last + cur) / 2.0;
 		last = cur;
@@ -49,19 +50,15 @@ public:
 	SingleScatAtten(double sunCos, double viewCos, double initRadius, double initRaidus2, const TransmitTable& transmitTable)
 		: initRadius_(initRadius),
 		initRadius2_(initRaidus2), viewCos_(viewCos), sunCos_(sunCos),
-		transmitInit_{ transmitTable(initRadius, viewCos) },
 		transmitTable_{ transmitTable }
 	{}
 
 	dvec3 operator()(double x) {
 		double newRaidus = displacedRaidus(initRadius_, initRadius2_, viewCos_, x),
 			displacedCosine = displacedCos(initRadius_, initRadius2_, viewCos_, x);
-		double displacedSunCos = cosSum(displacedCosine, sunCos_);
-		return phaseFunRay(cosineToSine(displacedSunCos))
-			* displacedDensity(viewCos_, initRadius_, initRadius2_, x)
-			* transmitInit_
+		return displacedDensity(viewCos_, initRadius_, initRadius2_, x)
 			/ transmitTable_(newRaidus, cosSum(viewCos_, displacedCosine))
-		*transmitTable_(newRaidus, -displacedSunCos);
+			* transmitTable_(newRaidus, -cosSum(displacedCosine, sunCos_));
 	}
 };
 
@@ -71,7 +68,8 @@ static constexpr double heightStep = atmThick / dintensity_hDim,
 viewCosStep = 2.0 / dintensity_viewDim,
 sunCosStep = 2.0 / dintensity_sunDim;
 
-static void bakeSingleScatterPart(dvec3* out, size_t from, size_t to, const TransmitTable* const transmitTable) {
+static void bakeSingleScatterPart(dvec3* out, size_t from, size_t to, const TransmitTable* const transmitTable_) {
+	const TransmitTable& transmitTable = *transmitTable_;
 
 	for (size_t i = from; i < to; i++) {
 		const double curSunCos = 1.0 - static_cast<double>(i) * sunCosStep;
@@ -84,8 +82,9 @@ static void bakeSingleScatterPart(dvec3* out, size_t from, size_t to, const Tran
 
 			for (size_t k = 0; k < intensity_viewDim; ++k) {
 				double curViewCos = 1.0 - static_cast<double>(k) * viewCosStep;
-				arrv[k] = 0.25 / PI * rayScatCoef
-					* integrate3(SingleScatAtten(curSunCos, curViewCos, curRadius, curRadius2, *transmitTable), 0, getHerizonAtmDepth(curRadius, curRadius2, curViewCos), 15.0);
+				arrv[k] = phaseFunRay(-cosSum(curViewCos, curSunCos))
+					/ 4.0 / PI * rayScatCoef * transmitTable(curRadius, curViewCos)
+					* integrate3(SingleScatAtten(curSunCos, curViewCos, curRadius, curRadius2, transmitTable), 0, getHerizonAtmDepth(curRadius, curRadius2, curViewCos), 15.0);
 			}
 		}
 	}
@@ -112,7 +111,15 @@ static ScatterTable bakeSingleScatterTable(const TransmitTable& transmitTable) {
 	return singleScatT;
 }
 
+dvec3 tmp(double x) {
+	return { exp(x), exp(x), exp(x) };
+}
+
 ScatterTable bakeScatterTable(const TransmitTable& transmitTable) {
+	
+	std::cout << integrate3(tmp, 0, 1, 0.01).x << endl;
+	return {};
+
 	return bakeSingleScatterTable(transmitTable);
 }
 
