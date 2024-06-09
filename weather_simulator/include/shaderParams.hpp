@@ -30,7 +30,7 @@ namespace StaticObjProgramParam {
 namespace SunProgramParam {
 	enum SunProgramPram : GLuint {
 		vPos, vEnd,
-		inTr = 0, exTr = 4, texture = 8, viewHeight = 9
+		inTr = 0, exTr = 4, transmitTex = 8, viewHeightN, scatterTex, sunCos, viewHeight
 	};
 }
 
@@ -43,7 +43,8 @@ namespace TerminalProgramParam {
 namespace SkyBoxProgramParam {
 	enum {
 		vPos, vEnd,
-		viewHeight = 0, inTr, sunCos = 5, intensityTex
+		viewHeightN = 0, inTr, sunCos = 5, intensityAMtex = 6,
+		intensityFMtex = 7, isAM = 8, viewHeight = 9
 	};
 }
 

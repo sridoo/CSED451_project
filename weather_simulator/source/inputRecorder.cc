@@ -1,6 +1,9 @@
+#include "GL/glew.h"
+#include "GL/freeglut.h"
+
 #include "inputRecorder.hpp"
 
-static bool w, a, s, d, t;
+static bool w, a, s, d, t, up, down;
 
 bool wPressed() {
 	return w;
@@ -16,6 +19,12 @@ bool dPressed() {
 }
 bool tPressed() {
 	return t;
+}
+bool upPressed() {
+	return up;
+}
+bool downPressed() {
+	return down;
 }
 
 void inRecKeyboardFunc(unsigned char key, int x, int y) {
@@ -39,6 +48,19 @@ void inRecKeyboardFunc(unsigned char key, int x, int y) {
 	}
 }
 
+void inRecSpecialFunc(int key, int x, int y) {
+	switch (key)
+	{
+	case GLUT_KEY_UP:
+		up = true;
+		break;
+	case GLUT_KEY_DOWN:
+		down = true;
+		break;
+	}
+
+}
+
 void initInRec() {
-	w = a = s = d = t = false;
+	w = a = s = d = t = up = down = false;
 }

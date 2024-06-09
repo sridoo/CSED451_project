@@ -4,11 +4,13 @@
 layout(location = 0) in vec3 vPos;
 
 layout(location = 1) uniform mat4 inTr;
+layout(location = 9) uniform float viewHeight;
 
-out vec2 fPos;
+out vec3 fPos;
 
 void main(){
 	gl_Position = inTr * vec4(vPos, 1);
-	fPos.x = sqrt(pow(vPos.x, 2) + pow(vPos.z, 2));
-	fPos.y = -vPos.y;
+	fPos.x = vPos.x;
+	fPos.y = vPos.y - viewHeight;
+	fPos.z = vPos.z;
 }

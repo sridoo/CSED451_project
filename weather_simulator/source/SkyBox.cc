@@ -74,15 +74,24 @@ SkyBox::SkyBox() {
 
 void SkyBox::drawSkyBoxIter(const mat4& intrinsicMat) {
 	glUseProgram(skyBoxProgram);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_3D, intensityTableTexID);
+	for (size_t i = 0; i < 2; i++) {
+		glActiveTexture(GL_TEXTURE0 + i);
+		glBindTexture(GL_TEXTURE_3D, intensityTableTexID[i]);
+	}
 	glBindVertexArray(vaoID_);
-
-	glUniformMatrix4fv(SkyBoxProgramParam::inTr, 1, GL_FALSE, value_ptr(intrinsicMat));
-	glUniform1f(SkyBoxProgramParam::viewHeight, camPos.y / 8000.f);
-	glUniform1f(SkyBoxProgramParam::sunCos, 0.5 - sunLightDir.y / sqrt(pow(sunLightDir.x, 2.f) + pow(sunLightDir.y, 2.f) + pow(sunLightDir.z, 2.f)) / 2.f);
 	
+	glUniformMatrix4fv(SkyBoxProgramParam::inTr, 1, GL_FALSE, value_ptr(intrinsicMat));
+	
+	glUniform1f(SkyBoxProgramParam::viewHeightN, camPos.y / 8000.f);
+	glUniform1f(SkyBoxProgramParam::sunCos, sunCos);
+	glUniform1f(SkyBoxProgramParam::viewHeight, camPos.y);
+
+	glUniform1i(SkyBoxProgramParam::intensityAMtex, 0);
+	glUniform1i(SkyBoxProgramParam::intensityFMtex, 1);
+	glUniform1i(SkyBoxProgramParam::isAM, sunLightDir.x > 0);
+
 	glDrawArrays(GL_TRIANGLES, 0, aboLen_);
+
 	glBindVertexArray(0);
 }
 

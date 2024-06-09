@@ -32,6 +32,7 @@ void exeCmd(const UserCommand& cmd) {
 		break;
 	case UserCommandType::exitTerminal:
 		glutKeyboardFunc(inRecKeyboardFunc);
+		glutSpecialFunc(inRecSpecialFunc);
 		cout << "TerminalMode exit command entered." << endl;
 		isTerminalMode = false;
 		break;
@@ -78,13 +79,16 @@ int main(int argc, char** argv) {
     glClearColor(0, 0, 0, 1);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_TEXTURE_3D);
 
 	loadPrograms();
 	cout << "Loading shaders done. Now loading transmit table..." << std::endl;
 	loadAtmTextures();
 	cout << "Loading transmit table done. Start running program..." << std::endl;
+
 	glutIdleFunc(idle);
 	glutKeyboardFunc(inRecKeyboardFunc);
+	glutSpecialFunc(inRecSpecialFunc);
 	glutDisplayFunc(display);
 
 	glutMainLoop();

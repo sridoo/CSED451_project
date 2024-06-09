@@ -10,6 +10,7 @@ using namespace glm;
 static const float PI = std::acosf(-1.f);
 float curTime = 12.f;
 float timeFlow = 0.1f;
+float sunCos = 1.f;
 vec3 sunLightDir;
 
 void moveTime(float timePassed) {
@@ -32,6 +33,7 @@ static void moveTime() {
 static void setSunLightDir() {
 	float angle = curTime / 12.f * PI;
 	sunLightDir = { std::sinf(angle), -std::cosf(angle), 0 };
+	sunCos = 0.5 - sunLightDir.y / sqrt(pow(sunLightDir.x, 2.f) + pow(sunLightDir.y, 2.f) + pow(sunLightDir.z, 2.f)) / 2.f;
 }
 
 void globalParamsIdle() {

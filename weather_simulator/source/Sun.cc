@@ -13,7 +13,7 @@
 using namespace glm;
 using namespace std;
 
-static constexpr double sunRaidus = 10.0;
+static constexpr double sunRaidus = 5.0;
 static const float PI = acosf(-1.f);
 
 Sun& Sun::instance() {
@@ -56,11 +56,19 @@ void Sun::drawSunIter(const mat4& intrinsicMat, const mat4& exTrinsicMat) {
 	mat4 tr = glm::rotate(exTrinsicMat, angle, { 0, 0, 1.f });
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, transmitTableTexID);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_3D, intensityTableTexID[0]);
+
+	int i;
 
 	glBindVertexArray(vaoID_);
 	glUniformMatrix4fv(SunProgramParam::inTr, 1, GL_FALSE, value_ptr(intrinsicMat));
 	glUniformMatrix4fv(SunProgramParam::exTr, 1, GL_FALSE, value_ptr(tr));
-	glUniform1f(SunProgramParam::viewHeight, camPos.y / 8000.f);
+	glUniform1f(SunProgramParam::viewHeightN, camPos.y / 8000.f);
+	glUniform1f(SunProgramParam::sunCos, sunCos);
+	glUniform1i(SunProgramParam::scatterTex, 1);
+	glUniform1i(SunProgramParam::transmitTex, 0);
+	glUniform1f(SunProgramParam::viewHeight, camPos.y);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, aboLen_);
 	glBindVertexArray(0);
 }

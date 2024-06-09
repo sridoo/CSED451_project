@@ -7,7 +7,7 @@
 using namespace std;
 
 GLuint transmitTableTexID;
-GLuint intensityTableTexID;
+GLuint intensityTableTexID[2];
 
 
 static constexpr size_t transmitT_hDim = 512, transmitT_cosDim = 512;
@@ -33,25 +33,26 @@ static void loadTransmitTableTex() {
 }
 
 static void loadIntensityTableTex() {
-	ifstream texFile(".\\resource\\atmData\\singleScatterTex.tex", std::ios::binary);
+	const char* intensityFiles[2] = { ".\\resource\\atmData\\singleScatterTexAM.tex", ".\\resource\\atmData\\singleScatterTexFM.tex"};
 	unique_ptr<GLubyte[]> texture(new GLubyte[intensity_hDim * intensity_viewDim * intensity_sunDim * 3]);
-	texFile.read((char*)texture.get(), intensity_hDim * intensity_viewDim * intensity_sunDim * 3 * sizeof(GLubyte));
-	glEnable(GL_TEXTURE_3D);
-	glGenTextures(1, &intensityTableTexID);
-	glBindTexture(GL_TEXTURE_3D, intensityTableTexID);
+	glGenTextures(2, intensityTableTexID);
 
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	for (size_t i = 0; i < 2; i++) {
+		ifstream texFile(intensityFiles[i], std::ios::binary);
+		texFile.read((char*)texture.get(), intensity_hDim * intensity_viewDim * intensity_sunDim * 3 * sizeof(GLubyte));
+		glBindTexture(GL_TEXTURE_3D, intensityTableTexID[i]);
+
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 
-	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB, intensity_viewDim, intensity_hDim, intensity_sunDim, 0, GL_RGB, GL_UNSIGNED_BYTE, texture.get());
-	glGenerateMipmap(GL_TEXTURE_3D);
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB, intensity_hDim, intensity_sunDim, intensity_viewDim, 0, GL_RGB, GL_UNSIGNED_BYTE, texture.get());
+		glGenerateMipmap(GL_TEXTURE_3D);
+	}
 	glBindTexture(GL_TEXTURE_3D, 0);
-	cout << glGetError() << endl;
-	
 }
 
 void loadAtmTextures() {

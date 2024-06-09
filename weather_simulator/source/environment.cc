@@ -128,7 +128,9 @@ void Plain::initVAO() {
 void Plain::drawIter(const mat4& intrinsicMat, const mat4& exTrinsicMat) {
 	glBindVertexArray(vao);
 	glUniformMatrix4fv(StaticObjProgramParam::tr, 1, GL_FALSE, value_ptr(intrinsicMat * exTrinsicMat));
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureID);
+	glUniform1i(StaticObjProgramParam::texture, 0);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, baoLen);
 	glBindVertexArray(0);
 }
@@ -211,6 +213,9 @@ Tree::Tree() {
 void Tree::drawIter(const mat4& intrinsicMat, const mat4& exTrinsicMat) {
 	glUniformMatrix4fv(StaticObjProgramParam::tr, 1, GL_FALSE, value_ptr(intrinsicMat * exTrinsicMat * modelTr));
 	for (auto& [vao, textureID, eboLen] : vaoIDs) {
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glUniform1i(StaticObjProgramParam::texture, 0);
 		glBindVertexArray(vao);
 		glBindTexture(GL_TEXTURE_2D, textureID);
 		glDrawElements(GL_TRIANGLES, eboLen, GL_UNSIGNED_INT, 0);

@@ -57,6 +57,7 @@ void Terminal::draw() {
 	glBindVertexArray(0);
 
 	glUseProgram(0);
+	glLoadIdentity();
 	glDisable(GL_DEPTH_TEST);
 	glColor3f(1.0, 1.0, 1.0);
 	glRasterPos2d(-1.0, -0.99);
@@ -152,6 +153,7 @@ static void tm_keyboardFun(unsigned char key, int i, int y) {
 
 void Terminal::dispatchTerminalMode() {
 	glutKeyboardFunc(tm_keyboardFun);
+	glutSpecialFunc(0);
 	terminalInput.clear();
 	msg = "Enter command: ";
 	terminalInputDone = terminalExitFlag = false;

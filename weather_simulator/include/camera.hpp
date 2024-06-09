@@ -5,4 +5,4 @@
 glm::mat4 getCamMat();
 void camIdle();
 
-extern const glm::vec3 camPos;
+extern glm::vec3 camPos;
