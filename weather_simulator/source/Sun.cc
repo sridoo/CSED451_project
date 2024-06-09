@@ -68,7 +68,6 @@ void Sun::drawSunIter(const mat4& intrinsicMat, const mat4& exTrinsicMat) {
 	glUniform1f(SunProgramParam::sunCos, sunCos);
 	glUniform1i(SunProgramParam::scatterTex, 1);
 	glUniform1i(SunProgramParam::transmitTex, 0);
-	glUniform1f(SunProgramParam::viewHeight, camPos.y);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, aboLen_);
 	glBindVertexArray(0);
 }

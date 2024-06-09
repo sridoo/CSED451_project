@@ -12,7 +12,7 @@ inline double getHerizonAtmDepth(double curRadius, double curRaidus2, double dir
 	double b = curRadius * dirCos;
 	double curHeightSine2 = curRaidus2 - pow(b, 2);
 
-	if (dirCos > 0) if (double tmp = earthRadius2 - curHeightSine2; tmp > 0)
+	if (dirCos >= 0) if (double tmp = earthRadius2 - curHeightSine2; tmp >= 0)
 		return b - sqrt(tmp);
 	return b + sqrt(atmTopRaidus2 - curHeightSine2);
 }

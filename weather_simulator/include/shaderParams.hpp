@@ -30,7 +30,7 @@ namespace StaticObjProgramParam {
 namespace SunProgramParam {
 	enum SunProgramPram : GLuint {
 		vPos, vEnd,
-		inTr = 0, exTr = 4, transmitTex = 8, viewHeightN, scatterTex, sunCos, viewHeight
+		inTr = 0, exTr = 4, transmitTex = 8, viewHeightN, scatterTex, sunCos
 	};
 }
 

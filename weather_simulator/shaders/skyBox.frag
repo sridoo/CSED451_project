@@ -13,5 +13,7 @@ out vec4 FragColor;
 
 void main(){
 	float r = sqrt(pow(fPos.x, 2) + pow(fPos.y, 2) + pow(fPos.z, 2));
+	vec4 c1 = texture(intensityAMtex, , vec3(viewHeightN, sunCos, 0.5 + fPos.y / r / 2));
+	vec4 c2 
 	FragColor = texture((isAM == (fPos.x > 0)? intensityAMtex: intensityFMtex), vec3(viewHeightN, sunCos, 0.5 + fPos.y / r / 2));
 }
